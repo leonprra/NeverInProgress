@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bayer Dither Swap Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:80px 40px}
+.card{width:500px;border:1px solid #1a1a1a;padding:44px;cursor:pointer;position:relative;overflow:hidden;user-select:none}
+.ta{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#e8e8e2;line-height:1.3;position:relative;z-index:1}
+.tb{font-family:'Space Grotesk',sans-serif;font-size:14px;color:#e8e8e2;line-height:1.7;position:absolute;inset:0;padding:44px;z-index:1;opacity:0;display:flex;align-items:center}
+.cv{position:absolute;inset:0;z-index:2;image-rendering:pixelated;pointer-events:none}
+.hint{font-family:'Space Mono',monospace;font-size:9px;color:#333;letter-spacing:.12em;text-transform:uppercase;margin-top:16px;text-align:center}
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="ta" id="ta">Why won't my kid swallow pills?</div>
+    <canvas class="cv" id="cv"></canvas>
+    <div class="tb" id="tb">Most swallowing aids address the physical act. They do not address the fear underneath it.</div>
+  </div>
+  <div class="hint">Hover to reveal</div>
+
+<script>
+const B8=[
+  [0,32,8,40,2,34,10,42],
+  [48,16,56,24,50,18,58,26],
+  [12,44,4,36,14,46,6,38],
+  [60,28,52,20,62,30,54,22],
+  [3,35,11,43,1,33,9,41],
+  [51,19,59,27,49,17,57,25],
+  [15,47,7,39,13,45,5,37],
+  [63,31,55,23,61,29,53,21]
+]
+
+const PX = 8
+const BAYER_W = 0.28
+const COL_W = 0.72
+const COVER_DUR = 420
+const CLEAR_DUR = 420
+const PAUSE_MS = 120
+
+const card = document.getElementById('card')
+const cv   = document.getElementById('cv')
+const ta   = document.getElementById('ta')
+const tb   = document.getElementById('tb')
+
+let W=0, H=0, COLS=0, ROWS=0
+
+function size(){
+  const r = card.getBoundingClientRect()
+  W = r.width; H = r.height
+  cv.width = W; cv.height = H
+  COLS = Math.ceil(W/PX)
+  ROWS = Math.ceil(H/PX)
+}
+
+function thresh(row, col){
+  const b = B8[row%8][col%8] / 64
+  const cf = col / Math.max(1, COLS-1)
+  return b * BAYER_W + cf * COL_W
+}
+
+function drawCover(t){
+  const ctx = cv.getContext('2d')
+  ctx.clearRect(0,0,W,H)
+  if(t<=0) return
+  ctx.fillStyle = '#000'
+  for(let r=0;r<ROWS;r++)
+    for(let c=0;c<COLS;c++)
+      if(t > thresh(r,c))
+        ctx.fillRect(c*PX, r*PX, PX, PX)
+}
+
+function drawClear(t){
+  const ctx = cv.getContext('2d')
+  ctx.clearRect(0,0,W,H)
+  ctx.fillStyle = '#000'
+  for(let r=0;r<ROWS;r++)
+    for(let c=0;c<COLS;c++)
+      if(t <= thresh(r,c))
+        ctx.fillRect(c*PX, r*PX, PX, PX)
+}
+
+function ease(t){ return t<.5 ? 2*t*t : -1+(4-2*t)*t }
+
+let raf = null
+let timer = null
+
+function cancel(){
+  if(raf){ cancelAnimationFrame(raf); raf=null }
+  if(timer){ clearTimeout(timer); timer=null }
+}
+
+function runAnim(dur, drawFn, onDone){
+  let start=null
+  function frame(ts){
+    if(!start) start=ts
+    const p = Math.min((ts-start)/dur, 1)
+    drawFn(ease(p))
+    if(p < 1){ raf = requestAnimationFrame(frame) }
+    else{ raf=null; drawFn(1); onDone && onDone() }
+  }
+  raf = requestAnimationFrame(frame)
+}
+
+function goToB(){
+  cancel(); size()
+  ta.style.opacity = '1'
+  tb.style.opacity = '0'
+  cv.getContext('2d').clearRect(0,0,W,H)
+  runAnim(COVER_DUR, t => drawCover(t), () => {
+    drawCover(1)
+    timer = setTimeout(() => {
+      ta.style.opacity = '0'
+      tb.style.opacity = '1'
+      runAnim(CLEAR_DUR, t => drawClear(t), () => {
+        cv.getContext('2d').clearRect(0,0,W,H)
+      })
+    }, PAUSE_MS)
+  })
+}
+
+function goToA(){
+  cancel(); size()
+  tb.style.opacity = '1'
+  ta.style.opacity = '0'
+  cv.getContext('2d').clearRect(0,0,W,H)
+  runAnim(COVER_DUR, t => drawCover(t), () => {
+    drawCover(1)
+    timer = setTimeout(() => {
+      tb.style.opacity = '0'
+      ta.style.opacity = '1'
+      runAnim(CLEAR_DUR, t => drawClear(t), () => {
+        cv.getContext('2d').clearRect(0,0,W,H)
+      })
+    }, PAUSE_MS)
+  })
+}
+
+card.addEventListener('mouseenter', goToB)
+card.addEventListener('mouseleave', goToA)
+
+window.addEventListener('load', () => { size() })
+window.addEventListener('resize', size)
+</script>
+</body>
+</html>

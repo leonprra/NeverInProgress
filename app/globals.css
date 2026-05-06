@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #000000;
+  --surface: #0d0d0d;
+  --border: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --text-muted: #8a8a8a;
+  --accent: #c8f064;
+  --font-mono: var(--font-space-mono), monospace;
+  --font-sans: var(--font-space-grotesk), sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: #000000;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+body {
+  font-family: var(--font-space-grotesk), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Border radius: 0 everywhere except 2px max */
+* {
+  border-radius: 0 !important;
+}
+
+/* Hide scrollbar but keep scroll */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #000;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a1a1a;
+}
+
+/* Responsive nav helpers */
+@media (max-width: 640px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+  .show-mobile {
+    display: flex !important;
+  }
+}
+
+/* ── Project rows ── */
+.project-row:hover {
+  background: #040404;
+}
+.project-row:hover .row-number {
+  color: #8a8a8a !important;
+}
+
+/* ── Directory button ── */
+.dir-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8a8a8a;
+  border: 1px solid #1e1e1e;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.dir-btn:hover {
+  color: #c8f064;
+  border-color: #c8f064;
+}
+
+/* ── Home page responsive ── */
+@media (max-width: 767px) {
+  .hero-section {
+    padding: 48px 20px 40px !important;
+  }
+  .hero-h1-new {
+    font-size: 40px !important;
+  }
+  .section-header {
+    padding: 14px 20px !important;
+  }
+  .dir-section {
+    padding: 24px 20px !important;
+  }
+  .about-section {
+    padding: 48px 20px 56px !important;
+  }
+  .about-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .row-left {
+    width: 64px !important;
+    padding-left: 20px !important;
+  }
+  .row-number {
+    font-size: 32px !important;
+  }
+  .row-right {
+    display: none !important;
+  }
+  .site-footer {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+  }
+  .project-row {
+    flex-direction: column !important;
+    min-height: unset !important;
+  }
+  .row-img-half {
+    width: 100% !important;
+    height: 200px !important;
+    order: -1;
+    flex-shrink: 0;
+  }
+  .row-left-half {
+    width: 100% !important;
+  }
+}
+
+/* ── Games page responsive ── */
+@media (max-width: 639px) {
+  .games-page {
+    padding: 32px 24px !important;
+  }
+  .games-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Portfolio page responsive ── */
+@media (max-width: 767px) {
+  .portfolio-topbar {
+    padding: 20px 24px !important;
+  }
+  .portfolio-header {
+    padding: 32px 24px 24px !important;
+  }
+  .portfolio-title {
+    font-size: 36px !important;
+  }
+  .portfolio-hero-wrap {
+    padding: 0 24px !important;
+  }
+  .portfolio-content {
+    grid-template-columns: 1fr !important;
+    padding: 32px 24px 60px !important;
+    gap: 32px !important;
+  }
+}
