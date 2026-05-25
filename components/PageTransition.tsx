@@ -66,7 +66,6 @@ export function usePageTransition() {
     const pathname = usePathname()
     const canvasRef    = useRef<HTMLCanvasElement | null>(null)
     const rafRef       = useRef<number | null>(null)
-    const pendingRef   = useRef<string | null>(null)
     const isAnimating  = useRef(false)
 
     // Ensure canvas covers the full viewport

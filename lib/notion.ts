@@ -1,4 +1,5 @@
 import { Client, isFullPage } from "@notionhq/client"
+import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
 import type { Project } from "./projects"
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN })
@@ -6,43 +7,43 @@ const DB_ID  = process.env.NOTION_PROJECTS_DB_ID!
 
 // ── Property extractors ───────────────────────────────────────────
 
-function getText(prop: any): string {
+type PageProp = PageObjectResponse["properties"][string] | undefined | null
+
+function getText(prop: PageProp): string {
   if (!prop) return ""
-  if (prop.type === "title")     return prop.title.map((t: any)     => t.plain_text).join("")
-  if (prop.type === "rich_text") return prop.rich_text.map((t: any) => t.plain_text).join("")
+  if (prop.type === "title")     return prop.title.map(t => t.plain_text).join("")
+  if (prop.type === "rich_text") return prop.rich_text.map(t => t.plain_text).join("")
   return ""
 }
 
-function getSelect(prop: any): string {
-  return prop?.select?.name ?? ""
+function getSelect(prop: PageProp): string {
+  if (!prop || prop.type !== "select") return ""
+  return prop.select?.name ?? ""
 }
 
-function getDate(prop: any): string {
-  const start = prop?.date?.start
-  return start ? start.slice(0, 4) : ""
+function getDate(prop: PageProp): string {
+  if (!prop || prop.type !== "date") return ""
+  return prop.date?.start?.slice(0, 4) ?? ""
 }
 
-function getFile(prop: any): string {
-  const files: any[] = prop?.files ?? []
+function getFile(prop: PageProp): string {
+  if (!prop || prop.type !== "files") return ""
+  const files = prop.files
   if (!files.length) return ""
   const f = files[0]
-  return f.type === "external" ? (f.external?.url ?? "") : (f.file?.url ?? "")
+  return f.type === "external" ? f.external.url : f.file.url
 }
 
-function getNumber(prop: any): string {
-  const n = prop?.number
-  if (n == null) return ""
-  return String(n).padStart(3, "0")
+function getNumber(prop: PageProp): string {
+  if (!prop || prop.type !== "number") return ""
+  if (prop.number == null) return ""
+  return String(prop.number).padStart(3, "0")
 }
 
-function getBoolean(prop: any): boolean {
-  return prop?.checkbox === true
-}
-
-function getGalleryImages(prop: any): string[] {
+function getGalleryImages(prop: PageProp): string[] {
   const text = getText(prop)
   if (!text) return []
-  return text.split("\n").map((s: string) => s.trim()).filter(Boolean)
+  return text.split("\n").map(s => s.trim()).filter(Boolean)
 }
 
 function parseCredits(text: string): { k: string; lines: string[] }[] {
@@ -61,7 +62,7 @@ function parseCredits(text: string): { k: string; lines: string[] }[] {
 
 const CARD_LABELS = ["overview", "process", "outcome"] as const
 
-function mapPage(page: any): Project | null {
+function mapPage(page: Parameters<typeof isFullPage>[0]): Project | null {
   if (!isFullPage(page)) return null
   const p = page.properties
 

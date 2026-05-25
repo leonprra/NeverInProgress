@@ -5,8 +5,6 @@ import Link from "next/link"
 import { Project } from "@/lib/projects"
 import styles from "./ProjectLayout.module.css"
 
-const PLACEHOLDER_FRAMES = [styles.f1, styles.f2, styles.f3, styles.f4, styles.f5]
-
 const DEFAULT_CARD = {
   label: "01 · overview",
   heading: "Full case study coming soon.",
@@ -105,7 +103,7 @@ export default function ProjectLayout({
       revealIO.disconnect()
       window.removeEventListener("scroll", handleScroll)
     }
-  }, [cards.length])
+  }, [cards])
 
   return (
     <div className={styles.page}>
