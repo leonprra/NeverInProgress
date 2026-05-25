@@ -753,8 +753,12 @@
 </div>
 
 <script>
-  // Entrance dither reveal
+  // Entrance dither reveal — gated on hero image load
   (function () {
+    // ── Timing constants (tune here) ────────────────────────────────
+    var MIN_HOLD       = 400   // ms — minimum black even if hero is cached
+    var SAFETY_TIMEOUT = 2500  // ms — failsafe: reveal even if hero never loads
+
     var BAYER8 = [
       [0,32,8,40,2,34,10,42],
       [48,16,56,24,50,18,58,26],
@@ -766,9 +770,11 @@
       [63,31,55,23,61,29,53,21],
     ]
     var PX = 10, DUR = 380
+
+    // ── Replace cover div with black canvas (synchronous — no flash) ─
     var cover = document.getElementById('dither-cover')
-    var W = window.innerWidth, H = window.innerHeight
-    var cW = Math.ceil(W / PX), cH = Math.ceil(H / PX)
+    var W  = window.innerWidth,  H  = window.innerHeight
+    var cW = Math.ceil(W / PX),  cH = Math.ceil(H / PX)
     var canvas = document.createElement('canvas')
     canvas.width = cW; canvas.height = cH
     canvas.style.cssText = 'position:fixed;inset:0;z-index:9999;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;'
@@ -777,7 +783,10 @@
     var ctx = canvas.getContext('2d')
     ctx.fillStyle = '#0b0b0b'
     ctx.fillRect(0, 0, cW, cH)
-    var start = null
+
+    // ── Dither-in animation ─────────────────────────────────────────
+    var pageStart = performance.now()
+
     function draw(t) {
       ctx.clearRect(0, 0, cW, cH)
       ctx.fillStyle = '#0b0b0b'
@@ -789,13 +798,39 @@
         }
       }
     }
+    var animStart = null
     function frame(ts) {
-      if (!start) start = ts
-      var t = Math.min((ts - start) / DUR, 1)
+      if (!animStart) animStart = ts
+      var t = Math.min((ts - animStart) / DUR, 1)
       draw(t)
       if (t < 1) { requestAnimationFrame(frame) } else { canvas.remove() }
     }
-    requestAnimationFrame(frame)
+
+    // ── Gate: wait for hero, honour MIN_HOLD, then reveal ──────────
+    var revealed = false
+    var safetyTimer
+
+    function startReveal() {
+      if (revealed) return
+      revealed = true
+      clearTimeout(safetyTimer)
+      var elapsed   = performance.now() - pageStart
+      var remaining = Math.max(0, MIN_HOLD - elapsed)
+      setTimeout(function () { requestAnimationFrame(frame) }, remaining)
+    }
+
+    safetyTimer = setTimeout(startReveal, SAFETY_TIMEOUT)
+
+    // Hero is a real <img> — listen on the element directly
+    var heroImg = document.querySelector('.hero img')
+    if (heroImg && heroImg.complete) {
+      startReveal()
+    } else if (heroImg) {
+      heroImg.addEventListener('load',  startReveal, { once: true })
+      heroImg.addEventListener('error', startReveal, { once: true })
+    } else {
+      startReveal()
+    }
   })();
 
   // Gallery instances
