@@ -470,7 +470,7 @@ function ProjectRow({ project, isFirst, isLast }: { project: Project; isFirst: b
                 color: "#c8f064", textTransform: "uppercase",
                 letterSpacing: "0.12em", marginBottom: 8,
               }}>
-                // insight
+                {"// insight"}
               </div>
               <p style={{
                 fontFamily: "var(--font-sans)",
