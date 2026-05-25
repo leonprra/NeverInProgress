@@ -7,7 +7,6 @@ import { useState } from "react"
 const NAV_LINKS = [
   { label: "HOME", href: "/" },
   { label: "DIRECTORY", href: "/directory" },
-  { label: "GAMES", href: "/games" },
 ]
 
 export default function Nav() {
@@ -44,7 +43,7 @@ export default function Nav() {
             letterSpacing: "0.05em",
           }}
         >
-          LP_
+          NEVERINPROGRESS
         </Link>
 
         {/* Center: Nav links (hidden below 640px) */}
@@ -81,17 +80,21 @@ export default function Nav() {
 
         {/* Right */}
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <span
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden-mobile"
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: 10,
-              color: "#777777",
+              color: "#c8f064",
               letterSpacing: "0.05em",
+              textDecoration: "none",
             }}
-            className="hidden-mobile"
           >
-            SG / EN
-          </span>
+            Connect ↗
+          </a>
 
           {/* Hamburger (shown below 640px) */}
           <button
@@ -169,18 +172,22 @@ export default function Nav() {
             )
           })}
 
-          <span
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               position: "absolute",
               bottom: 32,
               fontFamily: "'Space Mono', monospace",
               fontSize: 10,
-              color: "#777777",
+              color: "#c8f064",
               letterSpacing: "0.05em",
+              textDecoration: "none",
             }}
           >
-            SG / EN
-          </span>
+            Connect ↗
+          </a>
         </div>
       )}
     </>

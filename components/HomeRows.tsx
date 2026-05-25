@@ -1,7 +1,8 @@
 "use client"
 
 import { useRef, useEffect, useCallback, useState } from "react"
-import { useRouter } from "next/navigation"
+import type { Project as NotionProject } from "@/lib/projects"
+import { navigateWithDither } from "@/lib/dither-transition"
 
 // ── Bayer matrices ────────────────────────────────────────────────
 const B_TEXT = [
@@ -69,36 +70,21 @@ type Project = {
   heroImage: string
 }
 
-const PROJECTS: Project[] = [
-  {
-    number: "007", tag: "Industrial", year: "2024",
-    title: "My First Pill",
-    problem: "Most swallowing aids address the physical act. They do not address the fear underneath it.",
-    insight: "Readiness is built in layers. Emotional comfort has to come before physical practice.",
-    slug: "/portfolio/my-first-pill",
-    heroImage: "https://framerusercontent.com/images/fL9sBxAGrZ1a5wuWoV57vA8Arw.jpg",
-  },
-  {
-    number: "008", tag: "UI/UX", year: "2024",
-    title: "Nature of Things",
-    problem: "Exhibitions exist in memory after visitors leave. There is no space to return to what you saw.",
-    insight: "The site should not promote the exhibition. It should extend it.",
-    slug: "/portfolio/the-nature-of-things-website",
-    heroImage: "",
-  },
-  {
-    number: "010", tag: "Industrial", year: "2024",
-    title: "H.A.V.O.K",
-    problem: "Existing shooting games focus on aiming mechanics. They underinvest in what it feels like to be hit.",
-    insight: "Adding features made the game worse. The thrill was in the moment of impact, seen, heard, and felt.",
-    slug: "/portfolio/h-a-v-o-k",
-    heroImage: "",
-  },
-]
+function toRowProject(p: NotionProject): Project {
+  return {
+    number:    p.n,
+    tag:       p.filter,
+    year:      p.year,
+    title:     p.title,
+    problem:   p.problem  ?? "",
+    insight:   p.tagline  ?? "",
+    slug:      p.url ?? `/portfolio/${p.slug}`,
+    heroImage: p.thumb    ?? "",
+  }
+}
 
 // ── ProjectRow ────────────────────────────────────────────────────
 function ProjectRow({ project, isFirst, isLast }: { project: Project; isFirst: boolean; isLast: boolean }) {
-  const router = useRouter()
   const [hov, setHov] = useState(false)
 
   const rowRef     = useRef<HTMLDivElement>(null)
@@ -381,7 +367,7 @@ function ProjectRow({ project, isFirst, isLast }: { project: Project; isFirst: b
   return (
     <div
       ref={rowRef}
-      onClick={() => router.push(project.slug)}
+      onClick={() => navigateWithDither(project.slug)}
       style={{
         display: "flex",
         minHeight: 400,
@@ -531,11 +517,12 @@ function ProjectRow({ project, isFirst, isLast }: { project: Project; isFirst: b
 }
 
 // ── Exported component ────────────────────────────────────────────
-export default function HomeRows() {
+export default function HomeRows({ projects }: { projects: NotionProject[] }) {
+  const rows = projects.map(toRowProject)
   return (
     <div>
-      {PROJECTS.map((p, i) => (
-        <ProjectRow key={p.slug} project={p} isFirst={i === 0} isLast={i === PROJECTS.length - 1} />
+      {rows.map((p, i) => (
+        <ProjectRow key={p.slug} project={p} isFirst={i === 0} isLast={i === rows.length - 1} />
       ))}
     </div>
   )

@@ -1,18 +1,18 @@
 import Link from "next/link"
 import HomeRows from "@/components/HomeRows"
+import PROJECTS from "@/lib/projects"
 
 const SPEC = [
   { key: "BASED IN",     value: "Singapore",           accent: false },
   { key: "DISCIPLINE",   value: "Industrial Design",   accent: false },
   { key: "ALSO WORKS IN",value: "UI/UX, Communication",accent: false },
-  { key: "TOOLS",        value: "Rhino, Figma, React", accent: false },
+  { key: "TOOLS",        value: "Rhino, Figma, Adobe Suite", accent: false },
   { key: "STATUS",       value: "Available for work",  accent: true  },
 ]
 
 const ABOUT_PARAGRAPHS = [
-  "I am an industrial designer and creative technologist based in Singapore. My work spans physical product design, UI/UX, and communication design.",
-  "Most design problems have a visible layer and a felt layer. The visible layer is what the brief describes. The felt layer is what the person actually experiences.",
-  "I tend to start from the felt layer and work outwards. That usually means the solution ends up looking different from what was originally asked for.",
+  "is a concept by Leon Pereira. It comes from his habit of always talking about beginning something, yet never quite starting. ",
+  "He is an industrial designer and creative technologist based in Singapore. His work spans physical product design, UIUX, and communication design."
 ]
 
 function Eyebrow({ label }: { label: string }) {
@@ -33,6 +33,7 @@ function Eyebrow({ label }: { label: string }) {
 }
 
 export default function Home() {
+  const featuredProjects = PROJECTS.filter(p => p.url)
   return (
     <div style={{ background: "#000", color: "#fff", minHeight: "100vh" }}>
 
@@ -41,7 +42,7 @@ export default function Home() {
         className="hero-section"
         style={{ padding: "96px 40px 80px", borderBottom: "1px solid #111" }}
       >
-        <Eyebrow label="Industrial Designer, Creative Technologist" />
+
 
         <h1
           className="hero-h1-new"
@@ -54,10 +55,8 @@ export default function Home() {
             margin: 0,
           }}
         >
-          <span style={{ display: "block", color: "#e8e8e2" }}>Starting from</span>
-          <span style={{ display: "block", color: "#e8e8e2" }}>what is felt.</span>
-          <span style={{ display: "block", color: "#8a8a8a" }}>Arriving at</span>
-          <span style={{ display: "block", color: "#e8e8e2" }}>what is formed.</span>
+          <span style={{ display: "block", color: "#e8e8e2" }}>Never in progress...</span>
+          <span style={{ display: "block", color: "#ffffff" }}>but always becoming</span>
         </h1>
 
         <p style={{
@@ -68,8 +67,7 @@ export default function Home() {
           maxWidth: 420,
           marginTop: 24,
         }}>
-          Most design problems have a visible layer and a felt layer. I tend to
-          start from the felt layer and work outwards.
+          Designing things that get a 👍👍
         </p>
       </section>
 
@@ -91,7 +89,7 @@ export default function Home() {
           textTransform: "uppercase",
           letterSpacing: "0.12em",
         }}>
-          Selected works
+          Works
         </span>
         <span style={{
           fontFamily: "var(--font-mono)",
@@ -103,7 +101,7 @@ export default function Home() {
       </div>
 
       {/* ── Project rows (client component) ──────────────────────── */}
-      <HomeRows />
+      <HomeRows projects={featuredProjects} />
 
       {/* ── Directory button ─────────────────────────────────────── */}
       <div
@@ -136,7 +134,7 @@ export default function Home() {
               color: "#e8e8e2",
               marginBottom: 24,
             }}>
-              I work from the felt layer.
+              Never in progress
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {ABOUT_PARAGRAPHS.map((text, i) => (
@@ -199,7 +197,7 @@ export default function Home() {
                 Say hi
               </div>
               <a
-                href="mailto:hello@yourname.com"
+                href="mailto:2000leon@gmail.com"
                 style={{
                   fontFamily: "var(--font-sans)",
                   fontSize: 11,
@@ -207,7 +205,7 @@ export default function Home() {
                   textDecoration: "none",
                 }}
               >
-                hello@yourname.com
+                2000leon@gmail.com
               </a>
             </div>
           </div>
@@ -226,10 +224,10 @@ export default function Home() {
         }}
       >
         <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: "#8a8a8a" }}>
-          © 2025 — Your Name
+          2026 — Leon Pereira
         </span>
         <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: "#8a8a8a" }}>
-          Industrial Designer
+          :D
         </span>
       </footer>
 

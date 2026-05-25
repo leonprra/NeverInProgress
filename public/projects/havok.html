@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAVOK · Leon Pereira</title>
+<meta name="description" content="A mortar launcher and cellophane screen that delivers the terror of being shot without any pain.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0b0b0b;
+    --ink: #e8e8e2;
+    --muted: #8c8c8c;
+    --dim: #5a5a5a;
+    --faint: #2a2a2a;
+    --line: #1a1a1a;
+
+    --ph-fill: #bcbcbc;
+    --ph-border: #6a6a6a;
+    --ph-ink: #2a2a2a;
+    --ph-sub: #4a4a4a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection { background: var(--ink); color: var(--bg); }
+  a { color: inherit; text-decoration: none; }
+
+  .mono {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .mono-10 { font-size: 10px; letter-spacing: 0.14em; }
+  .mono-11 { font-size: 11px; letter-spacing: 0.12em; }
+
+  .page {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 64px;
+  }
+  section { position: relative; }
+  .sec-label {
+    color: var(--muted);
+    display: inline-flex; align-items: center; gap: 12px;
+    margin-bottom: 36px;
+  }
+  .sec-label::before {
+    content: "";
+    width: 22px; height: 1px; background: var(--dim);
+  }
+
+  /* SECTION HEADLINE */
+  .sec-headline {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0 0 28px 0;
+    max-width: 32ch;
+    text-wrap: balance;
+  }
+
+  /* PLACEHOLDER */
+  .ph {
+    width: 100%;
+    background: var(--ph-fill);
+    border: 1px solid var(--ph-border);
+    color: var(--ph-ink);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 24px;
+    position: relative;
+  }
+  .ph .label {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+    max-width: 36ch;
+    color: var(--ph-ink);
+  }
+  .ph .tag {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ph-sub);
+    border: 1px solid var(--ph-border);
+    padding: 3px 7px;
+    background: rgba(255,255,255,0.35);
+  }
+  .ph .corner {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ph-sub);
+  }
+
+  /* LANDSCAPE PLACEHOLDER 16:9 */
+  .ph-landscape {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    min-height: unset;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    padding: 32px 64px 56px;
+    background-image: url('havok%20photos/Hero%20shot.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .hero .bottom {
+    position: absolute;
+    left: 64px; right: 64px; bottom: 64px;
+    z-index: 2;
+  }
+  .hero h1 {
+    font-weight: 700;
+    font-size: 84px;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    margin: 0 0 18px 0;
+    color: var(--ink);
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+  .hero .tagline {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--muted);
+    margin: 0;
+    max-width: 48ch;
+  }
+
+  /* CONTEXT */
+  .context {
+    padding: 200px 0 160px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .context p {
+    font-size: 19px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    text-wrap: pretty;
+  }
+  .context p:last-child { margin-bottom: 0; }
+  .context .context-ph { height: 60vh; min-height: 480px; }
+
+  /* GALLERY SECTION */
+  .gallery-section { padding: 120px 0 0; }
+  .gallery-section .intro {
+    max-width: 60ch;
+    margin-bottom: 80px;
+  }
+  .gallery-section .intro p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    text-wrap: pretty;
+  }
+  .gallery-section .intro p:last-child { margin-bottom: 0; }
+
+  /* INSIGHT (pull-quote) */
+  .insight {
+    padding: 240px 0 240px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+  }
+  .insight .quote {
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1.25;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    margin: 0;
+    max-width: 26ch;
+    text-wrap: balance;
+  }
+  .insight .mark {
+    color: var(--dim);
+    font-family: "Space Mono", monospace;
+    margin: 0 8px;
+  }
+  .insight-sub {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 48ch;
+    text-align: center;
+    margin: 24px auto 0;
+    text-wrap: pretty;
+  }
+
+  /* RESPONSE SECTION */
+  .response-section { padding: 120px 0 0; }
+  .response-intro {
+    max-width: 60ch;
+    margin-bottom: 80px;
+  }
+  .response-sub {
+    padding: 80px 0;
+    border-top: 1px solid var(--faint);
+  }
+  .response-sub:last-child { padding-bottom: 160px; }
+  .sub-label {
+    display: block;
+    color: var(--dim);
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 20px;
+    padding-left: 32px;
+  }
+  .sub-headline {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    margin: 0 0 20px 0;
+    max-width: 28ch;
+    text-wrap: balance;
+  }
+  .response-sub p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+  .response-sub p:last-of-type { margin-bottom: 0; }
+
+  /* GIF LAYOUTS */
+  .gif-single { margin-top: 48px; }
+  .gif-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 48px;
+  }
+  .gif-quad {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 48px;
+  }
+  .gif-single img,
+  .gif-pair img,
+  .gif-quad img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* GALLERY PINS */
+  .pin-outer {
+    position: relative;
+    height: 360vh;
+    margin-left: -64px; margin-right: -64px;
+  }
+  .pin-stick {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .pin-hud {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 64px;
+    color: var(--dim);
+    margin-bottom: 28px;
+  }
+  .pin-hud .bars { display: flex; gap: 6px; }
+  .pin-hud .bars .bar {
+    width: 36px; height: 1px; background: var(--faint);
+    transition: background 240ms ease;
+  }
+  .pin-hud .bars .bar.on { background: var(--ink); }
+  .pin-rail-wrap {
+    width: 100%;
+    overflow: hidden;
+  }
+  .pin-rail {
+    display: flex;
+    gap: 24px;
+    padding: 0 64px;
+    will-change: transform;
+    transition: transform 80ms linear;
+  }
+  .pin-rail .ph {
+    flex: 0 0 auto;
+    width: 56vw;
+    max-width: 720px;
+    height: 62vh;
+    min-height: 420px;
+  }
+  .pin-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 64px 0;
+    color: var(--dim);
+  }
+
+  /* OUTCOME */
+  .outcome { padding: 120px 0 160px; }
+  .outcome .txt { max-width: 60ch; }
+  .outcome .txt p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    text-wrap: pretty;
+  }
+  .outcome .txt p:last-child { margin-bottom: 0; }
+
+  /* FUN SECTION */
+  .fun-section { padding: 120px 0 160px; }
+
+  /* VIDEO SECTION */
+  .video-section { padding: 120px 0 160px; }
+  .video-section .vid-ph {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    min-height: unset;
+    margin-top: 64px;
+  }
+
+  /* CREDITS + NAV */
+  .credits {
+    padding: 80px 0 28px;
+    border-top: 1px solid var(--line);
+  }
+  .credits-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+  .credits-grid .col .k {
+    color: var(--dim);
+    display: block;
+    margin-bottom: 12px;
+  }
+  .credits-grid .col p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 6px 0;
+  }
+  .credits-grid .col p:last-child { margin: 0; }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding: 64px 0 100px;
+    border-top: 1px solid var(--line);
+    margin-top: 56px;
+  }
+  .pager a {
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 22px 24px;
+    transition: border-color 160ms ease, color 160ms ease;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .pager a:hover { border-color: var(--dim); color: var(--ink); }
+  .pager .next { text-align: right; align-items: flex-end; }
+  .pager .dir { color: var(--dim); }
+  .pager .name { color: var(--ink); font-size: 18px; }
+
+  /* NAV */
+  .site-nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 48px; z-index: 100; background: transparent;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+  }
+  .nav-logo {
+    font-family: "Space Mono", monospace; font-size: 12px; font-weight: 700;
+    color: #ffffff; text-decoration: none; letter-spacing: 0.05em;
+  }
+  .nav-links {
+    display: flex; gap: 32px;
+    position: absolute; left: 50%; transform: translateX(-50%);
+  }
+  .nav-link {
+    font-family: "Space Mono", monospace; font-size: 10px;
+    letter-spacing: 0.1em; color: #777777; text-decoration: none;
+    text-transform: uppercase; transition: color 0.15s ease;
+  }
+  .nav-link:hover { color: #ffffff; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-locale { font-family: "Space Mono", monospace; font-size: 10px; color: #777777; }
+  .nav-connect { color: #c8f064; text-decoration: none; transition: color 0.15s ease; }
+  .nav-connect:hover { color: #ffffff; }
+  .nav-hamburger {
+    background: none; border: none; cursor: pointer; padding: 0;
+    display: none; flex-direction: column; gap: 5px;
+  }
+  .nav-hamburger span { display: block; width: 20px; height: 1px; background: #ffffff; }
+  .mobile-menu {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: #000000; flex-direction: column;
+    align-items: center; justify-content: center; gap: 40px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu-close {
+    position: absolute; top: 16px; right: 24px;
+    background: none; border: none; cursor: pointer;
+    font-family: "Space Mono", monospace; font-size: 10px;
+    color: #aaaaaa; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .mobile-menu-link {
+    font-family: "Space Grotesk", sans-serif; font-size: 36px; font-weight: 700;
+    color: #777777; text-decoration: none; letter-spacing: -0.02em;
+  }
+  .mobile-menu-link:hover { color: #ffffff; }
+  .mobile-menu-locale {
+    position: absolute; bottom: 32px;
+    font-family: "Space Mono", monospace; font-size: 10px; color: #777777;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .nav-links, .nav-locale { display: none; }
+    .nav-hamburger { display: flex; }
+  }
+  @media (max-width: 880px) {
+    .page { padding: 0 24px; }
+    .hero { padding: 24px 24px 40px; }
+    .hero .bottom { left: 24px; right: 24px; bottom: 32px; }
+    .hero h1 { font-size: 48px; }
+    .context { grid-template-columns: 1fr; gap: 40px; }
+    .insight .quote { font-size: 28px; }
+    .insight-sub { font-size: 14px; }
+    .gif-pair { grid-template-columns: 1fr; }
+    .gif-quad { grid-template-columns: 1fr; }
+    .sub-label { padding-left: 0; }
+    .sec-headline { font-size: 24px; }
+    .sub-headline { font-size: 20px; }
+    .credits-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .pin-outer { margin-left: -24px; margin-right: -24px; }
+    .pager { grid-template-columns: 1fr; }
+    .pager .next { text-align: left; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div id="dither-cover" style="position:fixed;inset:0;background:#0b0b0b;z-index:9999;pointer-events:none;"></div>
+
+<nav class="site-nav">
+  <a href="/" class="nav-logo">NEVERINPROGRESS</a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/directory" class="nav-link">Directory</a>
+  </div>
+  <div class="nav-right">
+    <a href="#" target="_blank" rel="noopener noreferrer" class="nav-locale nav-connect">Connect ↗</a>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" id="mobile-menu-close">CLOSE</button>
+  <a href="/" class="mobile-menu-link">Home</a>
+  <a href="/directory" class="mobile-menu-link">Directory</a>
+  <a href="#" target="_blank" rel="noopener noreferrer" class="mobile-menu-locale nav-connect">Connect ↗</a>
+</div>
+
+<!-- ======================================================
+     HERO
+====================================================== -->
+<section class="hero" data-screen-label="Hero">
+  <div class="bottom">
+    
+  </div>
+</section>
+
+<div class="page">
+
+<!-- ======================================================
+     SECTION 01 · CONTEXT
+====================================================== -->
+<section class="context" data-screen-label="01 Context">
+  <div>
+    <span class="sec-label mono mono-10">§ 01 &nbsp;/ Context</span>
+    <h2 class="sec-headline">The terror of being shot, without the pain.</h2>
+    <p>The question started somewhere uncomfortable. Shooting people is fun, at least in games, but the real thing inflicts pain and terror on another person. We wanted to know if you could keep the thrill and leave the harm behind. How do you get the terror, without the pain?</p>
+  </div>
+  <img src="havok%20photos/context.jpg" alt="" style="height:60vh;min-height:480px;width:100%;object-fit:cover;display:block;">
+</section>
+
+<!-- ======================================================
+     SECTION 02 · THE INVESTIGATION (gallery)
+====================================================== -->
+<section class="gallery-section" data-screen-label="02 The Investigation">
+  <span class="sec-label mono mono-10">§ 02 &nbsp;/ The Investigation</span>
+  <div class="intro">
+    <h2 class="sec-headline">We knew shooting was fun. We could not say why.</h2>
+    <p>The early prototypes leaned into features as a way of finding out. An air pump replaced the trigger to add haptic resistance. Pneumatics, shield deflectors, and fishing reels all entered the process at different points, each one meant to add another layer of interaction. We felt like a toy company slapping features onto toys.</p>
+  </div>
+
+  <div class="pin-outer">
+    <div class="pin-stick">
+      <div class="pin-hud mono mono-10">
+        <span>HAVOK / Investigation</span>
+        <div class="bars">
+          <span class="bar on"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <span><span class="pin-n">01</span> / 04</span>
+      </div>
+      <div class="pin-rail-wrap">
+        <div class="pin-rail">
+          <img src="havok%20photos/things%20tried%20(1).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/things%20tried%20(2).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/things%20tried%20(3).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/things%20tried%20(4).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+        </div>
+      </div>
+      <div class="pin-foot mono mono-10">
+        <span>scroll to advance</span>
+        <span>release on exit</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 03 · OUR OBSERVATIONS (gallery)
+====================================================== -->
+<section class="gallery-section" data-screen-label="03 Our Observations">
+  <span class="sec-label mono mono-10">§ 03 &nbsp;/ Our Observations</span>
+  <div class="intro">
+    <h2 class="sec-headline">Most of these features created more problems than they solved</h2>
+    <p> User tests kept pointing back to the same thing, which was that the additions were getting in the way of the feeling we were trying to amplify. At some point it became clearer to remove than to add. The features that did not serve the moment of impact were cut, one after another, until what remained was a much smaller system that did less but landed harder.</p>
+  </div>
+
+  <div class="pin-outer">
+    <div class="pin-stick">
+      <div class="pin-hud mono mono-10">
+        <span>HAVOK / Observations</span>
+        <div class="bars">
+          <span class="bar on"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <span><span class="pin-n">01</span> / 06</span>
+      </div>
+      <div class="pin-rail-wrap">
+        <div class="pin-rail">
+          <img src="havok%20photos/UT%201.png" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/UT%202.png" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/UT%203.png" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/UT%204.png" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/UT%205.png" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/UT%206.jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+        </div>
+      </div>
+      <div class="pin-foot mono mono-10">
+        <span>scroll to advance</span>
+        <span>release on exit</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 04 · INSIGHT (pull-quote)
+====================================================== -->
+<section class="insight" data-screen-label="04 Insight">
+  <div>
+    <p class="quote"><span class="mark">"</span>The thrill is not just in the shot. It is also in the reaction.<span class="mark">"</span></p>
+    <p class="insight-sub">Designing around the reaction produced something more interesting and more fun. The question then became how to build the game to amplify that reaction to the max.</p>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 05 · RESPONSE
+====================================================== -->
+<section class="response-section" data-screen-label="05 Response">
+
+  <div class="response-intro">
+    <span class="sec-label mono mono-10">§ 05 &nbsp;/ Response</span>
+    <h2 class="sec-headline">Our idea came in 3 parts: A thoomp, a crack, and a flinch you can see.</h2>
+  </div>
+
+  <!-- 5a · The Gun -->
+  <div class="response-sub">
+    <span class="sub-label"></span>
+    <h3 class="sub-headline">// The Gun</h3>
+    <p>A mortar launcher sits at the heart of the system, producing a satisfying thoomp as the dart leaves the tube. The pump mechanism builds in a layer of haptics, where more force means a more powerful shot. We fixed the launcher to the table on purpose. It limits how much the player can move, and it pulls their face toward the centre of the screen, right where the action is.</p>
+    <div class="gif-pair">
+      <img src="havok%20photos/Squeeze%20gif.gif" alt="">
+      <img src="havok%20photos/Shoot%20gif.gif" alt="">
+    </div>
+  </div>
+
+  <!-- 5b · The Screen -->
+  <div class="response-sub">
+    <span class="sub-label"></span>
+    <h3 class="sub-headline">// The Screen</h3>
+    <p>The target is a tightly stretched cellophane screen. It protects the player while delivering a sharp audible crack and a visible reaction the moment it is hit. The player who gets hit knows it. So does everyone standing nearby. What it needed next was a reason to aim.</p>
+    <div class="gif-single">
+      <img src="havok%20photos/Screen%20gif.gif" alt="">
+    </div>
+  </div>
+
+  <!-- 5c · The Goal -->
+  <div class="response-sub">
+    <span class="sub-label"></span>
+    <h3 class="sub-headline">// The Goal</h3>
+    <p>There are two targets on the screen. A large one in the centre, and a small one near the top. The centre target rewards players who want to brute force their way to a win. The smaller one rewards the few with the touch to lob a dart cleanly into it. Two ways to play, on the same screen, with easy resetting.</p>
+    <div class="gif-quad">
+      <img src="havok%20photos/goal%201.gif" alt="">
+      <img src="havok%20photos/goal%202.gif" alt="">
+      <img src="havok%20photos/goal%203.gif" alt="">
+      <img src="havok%20photos/goal%204.gif" alt="">
+    </div>
+  </div>
+
+</section>
+
+<!-- ======================================================
+     SECTION 06 · TRIAL AND ERROR (gallery)
+====================================================== -->
+<section class="gallery-section" data-screen-label="06 Trial and Error">
+  <span class="sec-label mono mono-10">§ 06 &nbsp;/ Trial and Error</span>
+  <div class="intro">
+    <h2 class="sec-headline">Most of it only worked on the tenth try.</h2>
+    <p>Getting there required precision in places we did not expect. The barrel needed millimetre-level adjustments before the sound landed consistently from shot to shot. The cellophane went through several fastening methods before it held under impact without tearing or going slack. The targets were the worst of all, almost impossible to build in a way that survived a direct hit.</p>
+  </div>
+
+  <div class="pin-outer">
+    <div class="pin-stick">
+      <div class="pin-hud mono mono-10">
+        <span>HAVOK / Trial and Error</span>
+        <div class="bars">
+          <span class="bar on"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <span><span class="pin-n">01</span> / 11</span>
+      </div>
+      <div class="pin-rail-wrap">
+        <div class="pin-rail">
+          <img src="havok%20photos/trial%20and%20error%20(2).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(3).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(4).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(5).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(6).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(7).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(8).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(9).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(11).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(16).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="havok%20photos/trial%20and%20error%20(18).jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+        </div>
+      </div>
+      <div class="pin-foot mono mono-10">
+        <span>scroll to advance</span>
+        <span>release on exit</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 07 · OUTCOME
+====================================================== -->
+<section class="outcome" data-screen-label="07 Outcome">
+  <span class="sec-label mono mono-10">§ 07 &nbsp;/ Outcome</span>
+  <div class="txt">
+    <h2 class="sec-headline">The smaller it got, the better it felt.</h2>
+    <p>Removing features kept improving the game, which was not what we expected when we set out to add things to it.</p>
+    <p>The final version does one thing. The thoomp, the crack, the flinch. That turned out to be enough to deliver maximum fun at a relatively small scale.</p>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 08 · FUN
+====================================================== -->
+<section class="fun-section" data-screen-label="08 Fun">
+  <span class="sec-label mono mono-10">§ 08 &nbsp;/ Fun</span>
+  <h2 class="sec-headline">We playtested non-stop</h2>
+  <img src="havok%20photos/Fun.png" alt="" style="width:100%;height:70vh;min-height:520px;object-fit:cover;display:block;margin-top:64px;">
+</section>
+
+<!-- ======================================================
+     SECTION 09 · VIDEO
+====================================================== -->
+<section class="video-section" data-screen-label="09 Video">
+  <span class="sec-label mono mono-10">§ 09 &nbsp;/ Video</span>
+  <div style="width:100%;aspect-ratio:16/9;margin-top:64px;">
+    <iframe src="https://www.youtube.com/embed/SDc92XkjZIQ" style="width:100%;height:100%;display:block;border:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 10 · CREDITS
+====================================================== -->
+<section class="credits" data-screen-label="10 Credits">
+  <span class="sec-label mono mono-10" style="margin-bottom:32px;">§ 10 &nbsp;/ Credits</span>
+  <div class="credits-grid">
+    <div class="col">
+      <span class="k mono mono-10">Collaborators</span>
+      <p>Leon Pereira</p>
+      <p>Zoey Chan</p>
+    </div>
+    <div class="col">
+      <span class="k mono mono-10">Guidance</span>
+      <p>Donn Koh</p>
+      <p>Platform Leader</p>
+    </div>
+    <div class="col">
+      <span class="k mono mono-10">Platform</span>
+      <p>Everything is Playable</p>
+    </div>
+    <div class="col">
+      <span class="k mono mono-10">Institution</span>
+      <p>Division of Industrial Design</p>
+      <p>National University of Singapore</p>
+    </div>
+  </div>
+
+  <nav class="pager">
+    <a href="resonaid.html" class="prev">
+      <span class="dir mono mono-10">← PREVIOUS</span>
+      <span class="name">Resonaid</span>
+    </a>
+    <a href="/directory" class="next">
+      <span class="dir mono mono-10">ALL PROJECTS →</span>
+      <span class="name">Directory</span>
+    </a>
+  </nav>
+</section>
+
+</div>
+
+<script>
+  // Entrance dither reveal
+  (function () {
+    var BAYER8 = [
+      [0,32,8,40,2,34,10,42],
+      [48,16,56,24,50,18,58,26],
+      [12,44,4,36,14,46,6,38],
+      [60,28,52,20,62,30,54,22],
+      [3,35,11,43,1,33,9,41],
+      [51,19,59,27,49,17,57,25],
+      [15,47,7,39,13,45,5,37],
+      [63,31,55,23,61,29,53,21],
+    ]
+    var PX = 10, DUR = 380
+    var cover = document.getElementById('dither-cover')
+    var W = window.innerWidth, H = window.innerHeight
+    var cW = Math.ceil(W / PX), cH = Math.ceil(H / PX)
+    var canvas = document.createElement('canvas')
+    canvas.width = cW; canvas.height = cH
+    canvas.style.cssText = 'position:fixed;inset:0;z-index:9999;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;'
+    document.body.appendChild(canvas)
+    if (cover) cover.remove()
+    var ctx = canvas.getContext('2d')
+    ctx.fillStyle = '#0b0b0b'
+    ctx.fillRect(0, 0, cW, cH)
+    var start = null
+    function draw(t) {
+      ctx.clearRect(0, 0, cW, cH)
+      ctx.fillStyle = '#0b0b0b'
+      for (var r = 0; r < cH; r++) {
+        for (var c = 0; c < cW; c++) {
+          if ((1 - t) > BAYER8[r % 8][c % 8] / 64) {
+            ctx.fillRect(c, r, 1, 1)
+          }
+        }
+      }
+    }
+    function frame(ts) {
+      if (!start) start = ts
+      var t = Math.min((ts - start) / DUR, 1)
+      draw(t)
+      if (t < 1) { requestAnimationFrame(frame) } else { canvas.remove() }
+    }
+    requestAnimationFrame(frame)
+  })();
+
+  // Gallery instances
+  (function () {
+    function initGallery(outer) {
+      const rail    = outer.querySelector('.pin-rail');
+      const bars    = Array.from(outer.querySelectorAll('.pin-hud .bar'));
+      const counter = outer.querySelector('.pin-n');
+      if (!rail) return;
+
+      const N = rail.children.length;
+
+      function sizePin() {
+        const railWidth = rail.scrollWidth;
+        const viewport  = outer.offsetWidth;
+        const travel    = Math.max(0, railWidth - viewport);
+        const COMFORT   = 1.1;
+        outer.style.height = (window.innerHeight + travel * COMFORT) + 'px';
+        outer.dataset.travel = travel;
+      }
+
+      function update() {
+        const rect     = outer.getBoundingClientRect();
+        const travel   = parseFloat(outer.dataset.travel || '0');
+        const total    = outer.offsetHeight - window.innerHeight;
+        const scrolled = Math.min(Math.max(-rect.top, 0), total);
+        const p        = total > 0 ? scrolled / total : 0;
+        rail.style.transform = 'translate3d(' + (-p * travel) + 'px, 0, 0)';
+
+        const idx = Math.min(N - 1, Math.floor(p * N + 0.0001));
+        bars.forEach(function (b, i) { b.classList.toggle('on', i <= idx); });
+        if (counter) counter.textContent = String(idx + 1).padStart(2, '0');
+      }
+
+      sizePin();
+      update();
+
+      var ticking = false;
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(function () { update(); ticking = false; });
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function () { sizePin(); update(); });
+
+      return { sizePin: sizePin, update: update };
+    }
+
+    var instances = [];
+    document.querySelectorAll('.pin-outer').forEach(function (outer) {
+      var inst = initGallery(outer);
+      if (inst) instances.push(inst);
+    });
+
+    window.addEventListener('load', function () {
+      instances.forEach(function (inst) { inst.sizePin(); inst.update(); });
+    });
+  })();
+
+  // Mobile nav
+  document.getElementById('nav-hamburger').addEventListener('click', function () {
+    document.getElementById('mobile-menu').classList.add('open');
+  });
+  document.getElementById('mobile-menu-close').addEventListener('click', function () {
+    document.getElementById('mobile-menu').classList.remove('open');
+  });
+</script>
+
+</body>
+</html>

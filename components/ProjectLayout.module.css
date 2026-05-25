@@ -1,0 +1,482 @@
+/* ── CSS variables scoped to the page root ── */
+.page {
+  --bg:          #000000;
+  --bg2:         #050505;
+  --ink:         #e8e8e2;
+  --muted:       #8c8c8c;
+  --dim:         #5a5a5a;
+  --faint:       #333333;
+  --line:        #111111;
+  --line2:       #1a1a1a;
+  --accent:      #c8f064;
+  --pad:         80px;
+  --card-bg:     rgba(8,8,8,0.72);
+  --card-border: #1a1a1a;
+
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.padX { padding-left: var(--pad); padding-right: var(--pad); }
+
+/* ── Topbar ── */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+  padding-left: var(--pad); padding-right: var(--pad);
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.back {
+  display: inline-flex; align-items: center; gap: 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+.back:hover { color: var(--ink); }
+.crumbs {
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  display: flex; gap: 14px;
+}
+.crumbSep { color: var(--faint); }
+.crumbActive { color: var(--ink); }
+.topbarIdx {
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em;
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: radial-gradient(ellipse at 62% 38%, #1c1c1c 0%, #0b0b0b 45%, #060606 75%, #030303 100%);
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  margin: 0;
+}
+.hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+  z-index: 1;
+}
+.heroImg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.heroPlaceholder { position: absolute; inset: 0; display: grid; place-items: center; }
+.heroObj {
+  width: 12%; height: 62%;
+  background: linear-gradient(180deg, #2a2a2a 0%, #161616 45%, #0c0c0c 100%);
+  transform: skewX(-2deg);
+  border-left: 1px solid #2f2f2f;
+  border-right: 1px solid #080808;
+  position: relative;
+}
+.heroObj::after {
+  content: ""; position: absolute; left: 50%; top: 0; bottom: 0;
+  width: 1px; background: rgba(255,255,255,0.04);
+}
+.heroFloor {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 30%;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 100%);
+  z-index: 1;
+}
+.heroCaption {
+  position: absolute; left: 20px; bottom: 18px;
+  color: var(--faint);
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+  z-index: 2;
+}
+.heroCaptionRight {
+  position: absolute; right: 20px; bottom: 18px;
+  color: var(--faint);
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+  z-index: 2;
+}
+
+/* ── Corner brackets ── */
+.brackets { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.brackets > span {
+  position: absolute;
+  width: 22px; height: 22px;
+  border-color: #2a2a2a;
+  border-style: solid;
+}
+.tl { top: 14px;    left: 14px;    border-width: 1px 0 0 1px; }
+.tr { top: 14px;    right: 14px;   border-width: 1px 1px 0 0; }
+.bl { bottom: 14px; left: 14px;    border-width: 0 0 1px 1px; }
+.br { bottom: 14px; right: 14px;   border-width: 0 1px 1px 0; }
+
+/* ── Title block ── */
+.titleBlock {
+  padding-top: 90px; padding-bottom: 90px;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 80px;
+  align-items: end;
+}
+.catLabel {
+  color: var(--muted);
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 28px;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.catLabel::before { content: "—"; color: var(--muted); }
+.title {
+  font-weight: 700;
+  font-size: 104px;
+  line-height: 0.94;
+  letter-spacing: -0.038em;
+  color: var(--ink);
+  margin: 0 0 28px 0;
+}
+.titleSlash { color: var(--accent); font-weight: 400; }
+.tagline {
+  font-size: 19px; line-height: 1.5;
+  color: var(--muted); max-width: 36ch; margin: 0;
+}
+.specRevLabel {
+  font-family: var(--font-mono);
+  font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 14px;
+}
+.titleMeta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.specK {
+  color: var(--dim); display: block; margin-bottom: 8px;
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.specV { color: var(--muted); font-size: 13px; line-height: 1.55; }
+
+/* ── Theater ── */
+.theater {
+  position: relative;
+  padding-top: 120px;
+  padding-bottom: 120px;
+}
+.streamLabel {
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 80px;
+}
+.streamLabel::before {
+  content: ""; width: 18px; height: 1px; background: var(--faint); display: inline-block;
+}
+
+/* Per-card paired layout */
+.cardRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: flex-start;
+}
+
+/* ── Sticky-scroll gallery ── */
+.galleryOuter {
+  position: relative;
+  /* height set inline: N × 100vh */
+}
+.gallerySticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Per-card image well */
+.cardWell {
+  align-self: center;
+}
+.cardWellLast { }
+
+/* ── Card zones ── */
+.cardZone {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ── Cards ── */
+.card {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 44px 44px 40px;
+  margin-bottom: 220px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 500ms cubic-bezier(.2,.7,.2,1), opacity 500ms ease;
+  opacity: 0;
+  transform: translateY(36px);
+  will-change: transform, opacity;
+}
+.card.isVisible { opacity: 1; transform: translateY(0); }
+.cardEven { margin-left: 40px;  margin-right: -20px; }
+.cardOdd  { margin-left: -20px; margin-right: 40px; }
+.cardLast { margin-bottom: 40px; }
+
+.cardNum {
+  color: var(--accent);
+  margin-bottom: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.slashes { color: var(--faint); margin-left: 6px; }
+
+.card h2 {
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.12;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  margin: 0 0 20px 0;
+  max-width: 22ch;
+}
+.card p {
+  font-size: 15px; line-height: 1.75;
+  color: var(--muted);
+  margin: 0 0 14px 0;
+  max-width: 50ch;
+}
+.card p:last-of-type { margin-bottom: 0; }
+
+.kvRow {
+  display: flex; gap: 32px;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.kvK { color: var(--dim); display: block; margin-bottom: 6px; font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; }
+.kvV { color: var(--muted); font-size: 13px; }
+.kvOn { color: var(--ink); }
+
+.cardCorner {
+  position: absolute; top: -1px; right: -1px;
+  color: var(--dim);
+  padding: 10px 14px;
+  border-left: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--card-border);
+  background: var(--bg);
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.cardFoot {
+  position: absolute; bottom: -1px; left: -1px;
+  color: var(--dim);
+  padding: 8px 14px;
+  border-right: 1px solid var(--card-border);
+  border-top: 1px solid var(--card-border);
+  background: var(--bg);
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+
+/* ── Sticky well ── */
+.well {
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 140px);
+  min-height: 540px;
+  max-height: 820px;
+  align-self: start;
+}
+.wellInner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #040404;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.wellInner::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+  z-index: 4;
+}
+.frame {
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity 700ms ease;
+  will-change: opacity;
+  overflow: hidden;
+}
+.frame.isActive { opacity: 1; }
+.frameImg { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* CSS placeholder frame gradients */
+.f1 { background: radial-gradient(ellipse at 50% 55%, #1d1d1d 0%, #0a0a0a 55%, #030303 100%); }
+.f1::after {
+  content: ""; position: absolute; left: 50%; top: 12%; bottom: 18%;
+  width: 18%; transform: translateX(-50%) skewX(-2deg);
+  background: linear-gradient(180deg, #2a2a2a 0%, #141414 50%, #0a0a0a 100%);
+  border-left: 1px solid #2e2e2e;
+}
+.f2 { background: linear-gradient(180deg, #0f0f0f 0%, #050505 100%); }
+.f2::after {
+  content: ""; position: absolute; left: 14%; right: 14%; top: 20%; bottom: 20%;
+  background: linear-gradient(180deg, #1c1c1c 0%, #0b0b0b 100%);
+  border-top: 1px solid #262626;
+  border-bottom: 1px solid #0b0b0b;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+.f3 { background: radial-gradient(ellipse at 72% 40%, #222 0%, #0a0a0a 55%, #030303 100%); }
+.f3::after {
+  content: ""; position: absolute; right: 16%; top: 22%; width: 34%; height: 56%;
+  background: linear-gradient(135deg, #262626 0%, #0c0c0c 100%);
+  transform: rotate(-7deg);
+}
+.f4 { background: linear-gradient(180deg, #111 0%, #050505 70%, #020202 100%); }
+.f4::after {
+  content: ""; position: absolute;
+  left: 20%; right: 20%; top: 15%; bottom: 15%;
+  background: repeating-linear-gradient(90deg, #1a1a1a 0 2px, transparent 2px 14px),
+              linear-gradient(180deg, #141414 0%, #080808 100%);
+}
+.f5 { background: radial-gradient(ellipse at 38% 60%, #1e1e1e 0%, #080808 60%, #020202 100%); }
+.f5::after {
+  content: ""; position: absolute;
+  left: 28%; top: 30%; width: 44%; height: 40%;
+  background: conic-gradient(from 210deg at 50% 50%, #1a1a1a, #262626, #101010, #1a1a1a);
+}
+
+/* Pagination dots — below the square gallery image */
+.wellDots {
+  display: flex; justify-content: center; align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.dotOn { background: var(--accent); }
+
+/* ── Credits ── */
+.credits {
+  padding-top: 100px; padding-bottom: 80px;
+  border-top: 1px solid var(--line);
+}
+.creditsLabel {
+  color: var(--dim);
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 46px;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.creditsLabel::before { content: ""; width: 18px; height: 1px; background: var(--faint); display: inline-block; }
+.creditsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+.credCard {
+  border: 1px solid var(--card-border);
+  padding: 28px 26px;
+  background: var(--bg2);
+}
+.credLabel {
+  color: var(--dim); display: block; margin-bottom: 14px;
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.credCard p { color: var(--muted); font-size: 13px; line-height: 1.7; margin: 0; }
+.credCard p + p { margin-top: 8px; }
+
+/* ── Next project ── */
+.nextProject {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 72px var(--pad);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  transition: background-color 220ms ease, transform 260ms ease;
+  text-decoration: none;
+  color: inherit;
+}
+.nextProject:hover { background: #050505; transform: translateY(-2px); }
+.nextProject:hover .nextArrow { transform: translate(6px, -6px); }
+.nextLabel {
+  color: var(--dim); display: block; margin-bottom: 14px;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.nextBig {
+  font-weight: 700; font-size: 44px; line-height: 1;
+  color: var(--ink); letter-spacing: -0.02em;
+  display: inline-flex; align-items: baseline; gap: 14px;
+}
+.nextNum {
+  color: var(--faint);
+  font-family: var(--font-mono); font-size: 14px; font-weight: 400; letter-spacing: 0.1em;
+}
+.nextCount {
+  color: var(--faint); margin-top: 10px; display: block;
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.nextArrow {
+  color: var(--accent);
+  font-size: 68px; line-height: 1; font-weight: 300;
+  transition: transform 260ms ease;
+  display: inline-block;
+}
+
+/* ── Colophon ── */
+.colophon {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 22px var(--pad);
+  color: var(--faint);
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.colophonDot { color: var(--accent); margin: 0 10px; }
+
+/* ── Responsive ── */
+@media (max-width: 980px) {
+  .page { --pad: 24px; }
+  .title { font-size: 56px; }
+  .titleBlock { grid-template-columns: 1fr; gap: 40px; }
+  .theater { padding-top: 40px; padding-bottom: 60px; }
+  .cardZone { min-height: auto; justify-content: flex-start; padding: 40px 0; }
+  .cardRow { grid-template-columns: 1fr; gap: 24px; }
+  .cardWell { width: 100%; }
+  .card { padding: 28px; margin-bottom: 40px; }
+  .card.cardEven, .card.cardOdd { margin-left: 0; margin-right: 0; }
+  .card h2 { font-size: 26px; }
+  .creditsGrid { grid-template-columns: 1fr 1fr; }
+  .nextBig { font-size: 28px; }
+}

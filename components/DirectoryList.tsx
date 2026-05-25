@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { navigateWithDither } from "@/lib/dither-transition"
 
 // ── Bayer matrices ─────────────────────────────────────────────────
 const BAYER4: number[][] = [
@@ -23,51 +24,15 @@ const BAYER8: number[][] = [
 const NOISE_W = 25
 const NOISE_H = Math.floor(NOISE_W * (16 / 9))
 
-// ── Type display map ───────────────────────────────────────────────
-const TYPE_DISPLAY: Record<string, string> = {
-  Industrial:    "Industrial",
-  UIUX:          "UI/UX",
-  Communication: "Communication",
-  Interior:      "Interior",
-}
-
-// ── Project data (sorted newest first) ────────────────────────────
+// ── Project type ───────────────────────────────────────────────────
 type Project = {
   title: string
   filter: string
   year: string
   slug: string
   thumb: string
-}
-
-const PROJECTS: Project[] = [
-  { title: "BUBL",                            filter: "Industrial",    year: "2025", slug: "bubl",                                   thumb: "https://framerusercontent.com/images/fL9sBxAGrZ1a5wuWoV57vA8Arw.jpg" },
-  { title: "Insync",                           filter: "UIUX",          year: "2025", slug: "insync",                                 thumb: "https://framerusercontent.com/images/ZWAwyL0WxVXgJmcRYQJc0obzIg.png" },
-  { title: "H.A.V.O.K",                       filter: "Industrial",    year: "2024", slug: "h-a-v-o-k",                              thumb: "https://framerusercontent.com/images/2gXGTeKm9OymU8ZdYpbwEaKYGlw.png" },
-  { title: "The Nature of Things Website",    filter: "UIUX",          year: "2024", slug: "the-nature-of-things-website",           thumb: "https://framerusercontent.com/images/IjpjrXsRYQAI0JfbA5OuQMyOWbM.png" },
-  { title: "Ollie the Lightning Cloud",       filter: "UIUX",          year: "2024", slug: "ollie-the-lightning-cloud",              thumb: "https://framerusercontent.com/images/btWDAf8WcfU0NbxqiNSDzkIPbTY.png" },
-  { title: "Sand Game",                       filter: "UIUX",          year: "2024", slug: "sand-game",                             thumb: "https://framerusercontent.com/images/7raukPO4arDkGNRjXh1ZYng0q3s.png" },
-  { title: "My First Pill",                   filter: "Industrial",    year: "2024", slug: "my-first-pill",                         thumb: "https://framerusercontent.com/images/lZS20YiOrIGbjmhVZ1u3mX8xXIs.png" },
-  { title: "The Nature of Things Exhibition", filter: "Interior",      year: "2024", slug: "the-nature-of-things-exhibition",       thumb: "https://framerusercontent.com/images/LVeH0OeV7GCNV8agctbnticcYjs.jpg" },
-  { title: "S for Speaker",                   filter: "Industrial",    year: "2023", slug: "s-for-speaker",                        thumb: "https://framerusercontent.com/images/1NyRVGFxuRafyBm0DYpfsCsdE.png" },
-  { title: "Wear & Tear",                     filter: "Communication", year: "2023", slug: "wear-tear",                            thumb: "https://framerusercontent.com/images/Atw0NnngKnXw3m4s40mGiTyPSY.jpg" },
-  { title: "RVRC",                            filter: "Communication", year: "2023", slug: "ridgeview-residential-college-designs", thumb: "https://framerusercontent.com/images/ioO9Ak0uhMfWWQsNCiiwVkOrJQ.png" },
-  { title: "Ethlas Office Renovation",        filter: "Interior",      year: "2022", slug: "ethlas-office-renovation",             thumb: "https://framerusercontent.com/images/cekUr70Lxg1A07jztFOvvRcPtU.jpg" },
-]
-
-const TABS = [
-  { label: "ALL",        key: "ALL" },
-  { label: "INDUSTRIAL", key: "INDUSTRIAL" },
-  { label: "UI/UX",      key: "UIUX" },
-  { label: "COMM",       key: "COMM" },
-  { label: "INTERIOR",   key: "INTERIOR" },
-]
-
-const TAB_TO_FILTER: Record<string, string> = {
-  INDUSTRIAL: "Industrial",
-  UIUX:       "UIUX",
-  COMM:       "Communication",
-  INTERIOR:   "Interior",
+  thumbnail?: string
+  url?: string
 }
 
 // ── Canvas helpers ─────────────────────────────────────────────────
@@ -189,9 +154,8 @@ function useBreakpoint() {
 }
 
 // ── Main Component ─────────────────────────────────────────────────
-export function DirectoryList() {
-  const [activeFilter, setActiveFilter] = React.useState("ALL")
-  const [hoveredSlug, setHoveredSlug]   = React.useState<string | null>(null)
+export function DirectoryList({ projects }: { projects: Project[] }) {
+  const [hoveredSlug, setHoveredSlug] = React.useState<string | null>(null)
   const bp       = useBreakpoint()
   const isMobile = bp === "mobile"
 
@@ -339,12 +303,7 @@ export function DirectoryList() {
     animateReverse()
   }
 
-  const filteredItems =
-    activeFilter === "ALL"
-      ? PROJECTS
-      : PROJECTS.filter(p => p.filter === TAB_TO_FILTER[activeFilter])
-
-  const hoveredTitle = hoveredSlug ? PROJECTS.find(p => p.slug === hoveredSlug)?.title : null
+  const hoveredTitle = hoveredSlug ? projects.find(p => p.slug === hoveredSlug)?.title : null
 
   const mono = { fontFamily: "var(--font-mono)" } as const
   const sans = { fontFamily: "var(--font-sans)" } as const
@@ -358,46 +317,21 @@ export function DirectoryList() {
         {/* Header */}
         <div style={{ padding: "40px 32px 28px", borderBottom: "1px solid #1a1a1a" }}>
           <div style={{ ...mono, fontSize: 9, letterSpacing: "0.12em", color: "#8a8a8a", textTransform: "uppercase", marginBottom: 8 }}>
-            — {filteredItems.length} works
+            — {projects.length} works
           </div>
-          <div style={{ ...sans, fontSize: 40, fontWeight: 700, lineHeight: 1.1, marginBottom: 20 }}>
+          <div style={{ ...sans, fontSize: 40, fontWeight: 700, lineHeight: 1.1 }}>
             Directory
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-            {TABS.map(tab => {
-              const active = activeFilter === tab.key
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveFilter(tab.key)}
-                  style={{
-                    padding: "5px 12px",
-                    background: active ? "#141414" : "transparent",
-                    border: `1px solid ${active ? "#333" : "transparent"}`,
-                    color: active ? "#c8f064" : "#8a8a8a",
-                    ...mono,
-                    fontSize: 9,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    cursor: "pointer",
-                    outline: "none",
-                  }}
-                >
-                  {tab.label}
-                </button>
-              )
-            })}
           </div>
         </div>
 
         {/* Column headers — desktop only */}
         {!isMobile && (
           <div style={{ display: "flex", padding: "10px 40px", borderBottom: "1px solid #1a1a1a" }}>
-            {(["TITLE", "TYPE", "YEAR", ""] as const).map((h, i) => (
+            {(["TITLE", "YEAR", ""] as const).map((h, i) => (
               <div
                 key={i}
                 style={{
-                  ...(i === 0 ? { flex: 1 } : i === 1 ? { width: 180, flexShrink: 0 } : i === 2 ? { width: 80, flexShrink: 0 } : { width: 40, flexShrink: 0 }),
+                  ...(i === 0 ? { flex: 1 } : i === 1 ? { width: 80, flexShrink: 0 } : { width: 40, flexShrink: 0 }),
                   ...mono,
                   fontSize: 9,
                   color: "#333",
@@ -412,13 +346,18 @@ export function DirectoryList() {
         )}
 
         {/* Rows */}
-        {filteredItems.map(proj => {
+        {projects.map(proj => {
           const hov = hoveredSlug === proj.slug
           return (
             <a
               key={proj.slug}
-              href={`/portfolio/${proj.slug}`}
-              onMouseEnter={() => onRowEnter(proj.slug, proj.thumb)}
+              href={proj.url ?? `/portfolio/${proj.slug}`}
+              onClick={(e) => {
+                if (e.metaKey || e.ctrlKey || e.shiftKey) return
+                e.preventDefault()
+                navigateWithDither(proj.url ?? `/portfolio/${proj.slug}`)
+              }}
+              onMouseEnter={() => onRowEnter(proj.slug, proj.thumbnail ?? proj.thumb)}
               onMouseLeave={onRowLeave}
               style={{
                 display: "flex",
@@ -450,20 +389,6 @@ export function DirectoryList() {
               }}>
                 {proj.title}
               </span>
-
-              {/* Type — desktop only */}
-              {!isMobile && (
-                <span style={{
-                  width: 180, flexShrink: 0,
-                  ...sans,
-                  fontSize: 24,
-                  fontWeight: 400,
-                  color: "#8c8c8c",
-                  lineHeight: 1,
-                }}>
-                  {TYPE_DISPLAY[proj.filter] ?? proj.filter}
-                </span>
-              )}
 
               {/* Year — desktop only */}
               {!isMobile && (

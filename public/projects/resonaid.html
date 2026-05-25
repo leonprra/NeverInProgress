@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resonaid · Leon Pereira</title>
+<meta name="description" content="A digital bone conduction hearing screening tool designed for non-specialist use in primary care.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0b0b0b;
+    --ink: #e8e8e2;
+    --muted: #8c8c8c;
+    --dim: #5a5a5a;
+    --faint: #2a2a2a;
+    --line: #1a1a1a;
+
+    --ph-fill: #bcbcbc;
+    --ph-border: #6a6a6a;
+    --ph-ink: #2a2a2a;
+    --ph-sub: #4a4a4a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection { background: var(--ink); color: var(--bg); }
+  a { color: inherit; text-decoration: none; }
+
+  .mono {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .mono-10 { font-size: 10px; letter-spacing: 0.14em; }
+  .mono-11 { font-size: 11px; letter-spacing: 0.12em; }
+
+  .page {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 64px;
+  }
+  section { position: relative; }
+  .sec-label {
+    color: var(--muted);
+    display: inline-flex; align-items: center; gap: 12px;
+    margin-bottom: 36px;
+  }
+  .sec-label::before {
+    content: "";
+    width: 22px; height: 1px; background: var(--dim);
+  }
+
+  /* SECTION HEADLINE */
+  .sec-headline {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0 0 28px 0;
+    max-width: 32ch;
+    text-wrap: balance;
+  }
+
+  /* PLACEHOLDER */
+  .ph {
+    width: 100%;
+    background: var(--ph-fill);
+    border: 1px solid var(--ph-border);
+    color: var(--ph-ink);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 24px;
+    position: relative;
+  }
+  .ph .label {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+    max-width: 36ch;
+    color: var(--ph-ink);
+  }
+  .ph .tag {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ph-sub);
+    border: 1px solid var(--ph-border);
+    padding: 3px 7px;
+    background: rgba(255,255,255,0.35);
+  }
+  .ph .corner {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ph-sub);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    padding: 32px 64px 56px;
+  }
+  .hero .ph {
+    position: absolute;
+    inset: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    height: 100%;
+  }
+  .hero .bottom {
+    position: absolute;
+    left: 64px; right: 64px; bottom: 64px;
+    z-index: 2;
+    color: var(--ph-ink);
+  }
+  .hero h1 {
+    font-weight: 700;
+    font-size: 84px;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    margin: 0 0 18px 0;
+    color: var(--ph-ink);
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+  .hero .tagline {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ph-sub);
+    margin: 0;
+    max-width: 48ch;
+  }
+
+  /* CONTEXT */
+  .context {
+    padding: 200px 0 160px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .context p {
+    font-size: 19px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    text-wrap: pretty;
+  }
+  .context p:last-child { margin-bottom: 0; }
+  .context .context-ph { height: 60vh; min-height: 480px; }
+
+  /* OBSERVATION */
+  .observation {
+    padding: 120px 0 0;
+  }
+  .observation-cols {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .observation-text p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    text-wrap: pretty;
+  }
+  .observation-text p:last-child { margin-bottom: 0; }
+  .observation-ph { height: 60vh; min-height: 480px; }
+
+  /* PULL-QUOTE */
+  .insight {
+    padding: 240px 0 240px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+  }
+  .insight .quote {
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1.25;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    margin: 0;
+    max-width: 26ch;
+    text-wrap: balance;
+  }
+  .insight .mark {
+    color: var(--dim);
+    font-family: "Space Mono", monospace;
+    margin: 0 8px;
+  }
+
+  /* PROCESS (kept, unused) */
+  .process {
+    padding: 120px 0 160px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .process-txt .sec-label { display: inline-flex; margin-bottom: 36px; }
+  .process-txt p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    text-wrap: pretty;
+  }
+  .process-txt p:last-child { margin-bottom: 0; }
+  .process .process-ph { height: 60vh; min-height: 480px; }
+
+  /* RESEARCH */
+  .research {
+    padding: 120px 0 160px;
+  }
+  .research-inner {
+    max-width: 60ch;
+  }
+  .research p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    text-wrap: pretty;
+  }
+  .research p:last-child { margin-bottom: 0; }
+  .research .research-ph {
+    height: 50vh;
+    min-height: 400px;
+    margin-top: 64px;
+  }
+
+  /* INSIGHT PAIR */
+  .insight-pair {
+    padding: 120px 0 160px;
+  }
+  .insight-pair-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .ip-card {
+    border: 1px solid var(--faint);
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .ip-label {
+    color: var(--dim);
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .ip-headline {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .ip-text {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  /* ITERATION */
+  .iteration {
+    padding: 120px 0 160px;
+  }
+  .iteration p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+  .iteration p:last-child { margin-bottom: 0; }
+  .iter-images {
+    margin-top: 64px;
+  }
+
+  /* TWO-UP GRID */
+  .two-up {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .two-up .ph { height: 360px; }
+
+  /* GALLERY SECTIONS */
+  .gallery-section { padding: 120px 0 0; }
+  .gallery-section .intro {
+    max-width: 60ch;
+    margin-bottom: 80px;
+  }
+  .gallery-section .intro p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    text-wrap: pretty;
+  }
+  .gallery-section .intro p:last-child { margin-bottom: 0; }
+
+  .pin-outer {
+    position: relative;
+    height: 360vh;
+    margin-left: -64px; margin-right: -64px;
+  }
+  .pin-stick {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .pin-hud {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 64px;
+    color: var(--dim);
+    margin-bottom: 28px;
+  }
+  .pin-hud .bars { display: flex; gap: 6px; }
+  .pin-hud .bars .bar {
+    width: 36px; height: 1px; background: var(--faint);
+    transition: background 240ms ease;
+  }
+  .pin-hud .bars .bar.on { background: var(--ink); }
+  .pin-rail-wrap {
+    width: 100%;
+    overflow: hidden;
+  }
+  .pin-rail {
+    display: flex;
+    gap: 24px;
+    padding: 0 64px;
+    will-change: transform;
+    transition: transform 80ms linear;
+  }
+  .pin-rail .ph {
+    flex: 0 0 auto;
+    width: 56vw;
+    max-width: 720px;
+    height: 62vh;
+    min-height: 420px;
+  }
+  .pin-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 64px 0;
+    color: var(--dim);
+  }
+
+  /* OUTCOME */
+  .outcome { padding: 120px 0 160px; }
+  .outcome .three-up {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  .outcome .three-up .ph { height: 320px; }
+  .outcome .two-up {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  .outcome .two-up .ph { height: 360px; }
+  .outcome .txt {
+    max-width: 60ch;
+  }
+  .outcome .txt p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 22px 0;
+    text-wrap: pretty;
+  }
+  .outcome .txt p:last-child { margin-bottom: 0; }
+
+  /* CREDITS + NAV */
+  .credits {
+    padding: 80px 0 28px;
+    border-top: 1px solid var(--line);
+  }
+  .credits-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+  .credits-grid .col .k {
+    color: var(--dim);
+    display: block;
+    margin-bottom: 12px;
+  }
+  .credits-grid .col p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 6px 0;
+  }
+  .credits-grid .col p:last-child { margin: 0; }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding: 64px 0 100px;
+    border-top: 1px solid var(--line);
+    margin-top: 56px;
+  }
+  .pager a {
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 22px 24px;
+    transition: border-color 160ms ease, color 160ms ease;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .pager a:hover { border-color: var(--dim); color: var(--ink); }
+  .pager .next { text-align: right; align-items: flex-end; }
+  .pager .dir { color: var(--dim); }
+  .pager .name { color: var(--ink); font-size: 18px; }
+
+  /* NAV */
+  .site-nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 48px; z-index: 100; background: transparent;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+  }
+  .nav-logo {
+    font-family: "Space Mono", monospace; font-size: 12px; font-weight: 700;
+    color: #ffffff; text-decoration: none; letter-spacing: 0.05em;
+  }
+  .nav-links {
+    display: flex; gap: 32px;
+    position: absolute; left: 50%; transform: translateX(-50%);
+  }
+  .nav-link {
+    font-family: "Space Mono", monospace; font-size: 10px;
+    letter-spacing: 0.1em; color: #777777; text-decoration: none;
+    text-transform: uppercase; transition: color 0.15s ease;
+  }
+  .nav-link:hover { color: #ffffff; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-locale { font-family: "Space Mono", monospace; font-size: 10px; color: #777777; }
+  .nav-connect { color: #c8f064; text-decoration: none; transition: color 0.15s ease; }
+  .nav-connect:hover { color: #ffffff; }
+  .nav-hamburger {
+    background: none; border: none; cursor: pointer; padding: 0;
+    display: none; flex-direction: column; gap: 5px;
+  }
+  .nav-hamburger span { display: block; width: 20px; height: 1px; background: #ffffff; }
+  .mobile-menu {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: #000000; flex-direction: column;
+    align-items: center; justify-content: center; gap: 40px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu-close {
+    position: absolute; top: 16px; right: 24px;
+    background: none; border: none; cursor: pointer;
+    font-family: "Space Mono", monospace; font-size: 10px;
+    color: #aaaaaa; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .mobile-menu-link {
+    font-family: "Space Grotesk", sans-serif; font-size: 36px; font-weight: 700;
+    color: #777777; text-decoration: none; letter-spacing: -0.02em;
+  }
+  .mobile-menu-link:hover { color: #ffffff; }
+  .mobile-menu-locale {
+    position: absolute; bottom: 32px;
+    font-family: "Space Mono", monospace; font-size: 10px; color: #777777;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .nav-links, .nav-locale { display: none; }
+    .nav-hamburger { display: flex; }
+  }
+  @media (max-width: 880px) {
+    .page { padding: 0 24px; }
+    .hero { padding: 24px 24px 40px; }
+    .hero .bottom { left: 24px; right: 24px; bottom: 32px; }
+    .hero h1 { font-size: 48px; }
+    .context { grid-template-columns: 1fr; gap: 40px; }
+    .observation-cols { grid-template-columns: 1fr; gap: 40px; }
+    .process { grid-template-columns: 1fr; gap: 40px; }
+    .insight .quote { font-size: 28px; }
+    .insight-pair-grid { grid-template-columns: 1fr; }
+    .ip-card { padding: 32px; }
+    .two-up { grid-template-columns: 1fr; }
+    .outcome .two-up { grid-template-columns: 1fr; }
+    .outcome .three-up { grid-template-columns: 1fr; }
+    .credits-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .pin-outer { margin-left: -24px; margin-right: -24px; }
+    .pager { grid-template-columns: 1fr; }
+    .pager .next { text-align: left; align-items: flex-start; }
+    .sec-headline { font-size: 24px; }
+  }
+  .hero h1 { color: var(--ink); }
+  .hero .tagline { color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="dither-cover" style="position:fixed;inset:0;background:#0b0b0b;z-index:9999;pointer-events:none;"></div>
+
+<nav class="site-nav">
+  <a href="/" class="nav-logo">NEVERINPROGRESS</a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/directory" class="nav-link">Directory</a>
+  </div>
+  <div class="nav-right">
+    <a href="#" target="_blank" rel="noopener noreferrer" class="nav-locale nav-connect">Connect ↗</a>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" id="mobile-menu-close">CLOSE</button>
+  <a href="/" class="mobile-menu-link">Home</a>
+  <a href="/directory" class="mobile-menu-link">Directory</a>
+  <a href="#" target="_blank" rel="noopener noreferrer" class="mobile-menu-locale nav-connect">Connect ↗</a>
+</div>
+
+<!-- ======================================================
+     HERO
+====================================================== -->
+<section class="hero" data-screen-label="Hero">
+  <img src="resonaid%20photos/Hero%20Shot.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+  <div class="bottom">
+    <h1>Resonaid</h1>
+    <p class="tagline">A bone conduction hearing screening tool for non-specialist hands.</p>
+  </div>
+</section>
+
+<div class="page">
+
+<!-- ======================================================
+     SECTION 01 · CONTEXT
+====================================================== -->
+<section class="context" data-screen-label="01 Context">
+  <div class="context-inner">
+    <span class="sec-label mono mono-10">§ 01 &nbsp;/ Context</span>
+    <h2 class="sec-headline">Hearing loss in adult Singaporeans has become more common over the last decade. Early screening, on the other hand, has not kept up.</h2>
+    <p>People who would go for a regular health check-up would get their temperature taken or blood drawn, but not get a tuning fork test done.</p>
+  </div>
+  <img src="resonaid%20photos/context.jpg" alt="" class="context-ph" style="width:100%;object-fit:cover;display:block;">
+</section>
+
+<!-- ======================================================
+     SECTION 02 · OUR OBSERVATION
+====================================================== -->
+<section class="observation" data-screen-label="02 Observation">
+  <div class="observation-cols">
+    <div class="observation-text">
+      <span class="sec-label mono mono-10">§ 02 &nbsp;/ Our Observation</span>
+      <h2 class="sec-headline">The tuning fork is still the standard first-line hearing screening tool used in primary care.</h2>
+      <p>It is cheap, it is portable, and in skilled hands it works well enough to flag serious hearing problems worth investigating further.</p>
+    </div>
+    <img src="resonaid%20photos/observation.png" alt="" class="observation-ph" style="width:100%;object-fit:cover;display:block;">
+  </div>
+  <div class="insight" style="padding: 160px 0 160px;">
+    <div>
+      <p class="quote" style="max-width: 40ch; font-size: 32px;"><span class="mark">"</span>After speaking with more than 20 doctors, a pattern emerged. General practitioners tend to skip this test. Our early assumption was that the tuning fork itself was to blame.<span class="mark">"</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 03 · RESEARCH
+====================================================== -->
+<section class="research" data-screen-label="03 Research">
+  <span class="sec-label mono mono-10">§ 03 &nbsp;/ Research</span>
+  <div class="research-inner">
+    <h2 class="sec-headline">We corroborated our findings with a specialist.</h2>
+    <p>Working with an Ear Nose Throat doctor introduced us to a world of information and insight, shaping how we should approach this issue. We consulted with her over the course of 13 weeks, and the consults shaped what the project came to be. While the low hanging fruit would be to design a new type of tuning fork, the solution did not feel so straight forward.</p>
+  </div>
+  <img src="resonaid%20photos/research.jpg" alt="" class="research-ph" style="width:100%;object-fit:cover;display:block;">
+  <div class="research-inner" style="margin-top: 80px;">
+    <h2 class="sec-headline">So why do some GPs skip the test?</h2>
+    <p>Our research pointed to compliance as the real issue. A better tool means nothing if a GP skips the test anyway. So the goal shifted. To bypass any compliance issues, we needed more screenings and therefore a lower barrier to entry.</p>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 04 · KEY INSIGHT
+====================================================== -->
+<section class="insight-pair" data-screen-label="04 Key Insight">
+  <span class="sec-label mono mono-10">§ 04 &nbsp;/ Key Insight</span>
+  <div class="insight-pair-grid">
+    <div class="ip-card">
+      <span class="ip-label mono">// insight</span>
+      <p class="ip-headline">Better accuracy in expert hands is not the goal.</p>
+      <p class="ip-text">Making screening possible in hands that have no training at all is what changes the picture.</p>
+    </div>
+    <div class="ip-card">
+      <span class="ip-label mono">// insight</span>
+      <p class="ip-headline">Accessible hearing testing increases adoption.</p>
+      <p class="ip-text">This would triage serious cases earlier, especially in underserved communities.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 05 · ITERATION
+====================================================== -->
+<section class="iteration" data-screen-label="05 Iteration">
+  <span class="sec-label mono mono-10">§ 05 &nbsp;/ Iteration</span>
+  <h2 class="sec-headline">We iterated like crazy.</h2>
+  <p>The idea of the tool kept shifting. We were no longer designing something for a doctor with years of medical school behind them. We were designing something that could reproduce the right tuning fork frequencies in the hands of someone with little to no experience running a hearing test. That gap drove a long run of prototypes and several rounds of testing with people from across the medical field.</p>
+  <div class="two-up iter-images">
+    <img src="resonaid%20photos/iteration%201.jpg" alt="" style="width:100%;height:360px;object-fit:cover;display:block;">
+    <img src="resonaid%20photos/iteration%202.jpg" alt="" style="width:100%;height:360px;object-fit:cover;display:block;">
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 06 · SOLUTION (GALLERY)
+====================================================== -->
+<section class="gallery-section" data-screen-label="06 Solution">
+  <span class="sec-label mono mono-10">§ 06 &nbsp;/ Solution</span>
+  <div class="intro">
+    <h2 class="sec-headline">Turn it on, select a frequency, and test. </h2>
+    <p>Resonaid is a digital bone conduction hearing screening tool designed for non-specialist use. The interface walks the user through the sequence, and the result is displayed without requiring interpretation.</p>
+    <p>Every step that used to depend on clinical judgement has been replaced or removed. The frequency is set by the device, not by how hard the user strikes something. The output is read off the screen, not from the patient's verbal response alone. The test becomes the same consistent test, regardless of who is holding it.</p>
+  </div>
+
+  <div class="pin-outer">
+    <div class="pin-stick">
+      <div class="pin-hud mono mono-10">
+        <span>Resonaid / Final</span>
+        <div class="bars">
+          <span class="bar on"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <span><span class="pin-n">01</span> / 04</span>
+      </div>
+      <div class="pin-rail-wrap">
+        <div class="pin-rail">
+          <img src="resonaid%20photos/Final%201.jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="resonaid%20photos/Final%202.JPG" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="resonaid%20photos/Final%203.JPG" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+          <img src="resonaid%20photos/Final%204.jpg" alt="" style="flex:0 0 auto;width:56vw;max-width:720px;height:62vh;min-height:420px;object-fit:cover;display:block;">
+        </div>
+      </div>
+      <div class="pin-foot mono mono-10">
+        <span>scroll to advance</span>
+        <span>release on exit</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 07 · OUTCOME
+====================================================== -->
+<section class="outcome" data-screen-label="07 Outcome">
+  <span class="sec-label mono mono-10">§ 07 &nbsp;/ Outcome</span>
+  <h2 class="sec-headline">It outperformed the tool it was built to replace.</h2>
+  <div class="three-up">
+    <img src="resonaid%20photos/testing%201.jpg" alt="" style="width:100%;height:320px;object-fit:cover;display:block;">
+    <img src="resonaid%20photos/testing%202.jpg" alt="" style="width:100%;height:320px;object-fit:cover;display:block;">
+    <img src="resonaid%20photos/testing%203.jpg" alt="" style="width:100%;height:320px;object-fit:cover;display:block;">
+  </div>
+  <div class="txt">
+    <p>An A/B comparison against a traditional tuning fork was run with both doctors and patients. Resonaid performed better across speed, accuracy, comfort, ease of use, and how clearly the patient understood their result.</p>
+    <p>It is now in active R&amp;D with a hospital partner. The next phase is clinical validation in a real screening environment, rather than a controlled test.</p>
+  </div>
+</section>
+
+<!-- ======================================================
+     SECTION 08 · CREDITS + NAV
+====================================================== -->
+<section class="credits" data-screen-label="08 Credits">
+  <span class="sec-label mono mono-10" style="margin-bottom:32px;">§ 08 &nbsp;/ Credits</span>
+  <div class="credits-grid">
+    <div class="col">
+      <span class="k mono mono-10">Collaborators</span>
+      <p>Lu Enze</p>
+      <p>Beatrice Lum</p>
+      <p>Leon Pereira</p>
+    </div>
+    <div class="col">
+      <span class="k mono mono-10">Supervisor</span>
+      <p>Dr Ching Chiuan Yen</p>
+    </div>
+    <div class="col">
+      <span class="k mono mono-10">Platform</span>
+      <p>Design for Medicine</p>
+    </div>
+    <div class="col">
+      <span class="k mono mono-10">Institution</span>
+      <p>Division of Industrial Design</p>
+      <p>National University of Singapore</p>
+    </div>
+  </div>
+
+  <nav class="pager">
+    <a href="my-first-pill.html" class="prev">
+      <span class="dir mono mono-10">← PREVIOUS</span>
+      <span class="name">My First Pill</span>
+    </a>
+    <a href="havok.html" class="next">
+      <span class="dir mono mono-10">NEXT →</span>
+      <span class="name">HAVOK</span>
+    </a>
+  </nav>
+</section>
+
+</div>
+
+<script>
+  // Entrance dither reveal
+  (function () {
+    var BAYER8 = [
+      [0,32,8,40,2,34,10,42],
+      [48,16,56,24,50,18,58,26],
+      [12,44,4,36,14,46,6,38],
+      [60,28,52,20,62,30,54,22],
+      [3,35,11,43,1,33,9,41],
+      [51,19,59,27,49,17,57,25],
+      [15,47,7,39,13,45,5,37],
+      [63,31,55,23,61,29,53,21],
+    ]
+    var PX = 10, DUR = 380
+    var cover = document.getElementById('dither-cover')
+    var W = window.innerWidth, H = window.innerHeight
+    var cW = Math.ceil(W / PX), cH = Math.ceil(H / PX)
+    var canvas = document.createElement('canvas')
+    canvas.width = cW; canvas.height = cH
+    canvas.style.cssText = 'position:fixed;inset:0;z-index:9999;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;'
+    document.body.appendChild(canvas)
+    if (cover) cover.remove()
+    var ctx = canvas.getContext('2d')
+    ctx.fillStyle = '#0b0b0b'
+    ctx.fillRect(0, 0, cW, cH)
+    var start = null
+    function draw(t) {
+      ctx.clearRect(0, 0, cW, cH)
+      ctx.fillStyle = '#0b0b0b'
+      for (var r = 0; r < cH; r++) {
+        for (var c = 0; c < cW; c++) {
+          if ((1 - t) > BAYER8[r % 8][c % 8] / 64) {
+            ctx.fillRect(c, r, 1, 1)
+          }
+        }
+      }
+    }
+    function frame(ts) {
+      if (!start) start = ts
+      var t = Math.min((ts - start) / DUR, 1)
+      draw(t)
+      if (t < 1) { requestAnimationFrame(frame) } else { canvas.remove() }
+    }
+    requestAnimationFrame(frame)
+  })();
+
+  // Gallery instances
+  (function () {
+    function initGallery(outer) {
+      const rail    = outer.querySelector('.pin-rail');
+      const bars    = Array.from(outer.querySelectorAll('.pin-hud .bar'));
+      const counter = outer.querySelector('.pin-n');
+      if (!rail) return;
+
+      const N = rail.children.length;
+
+      function sizePin() {
+        const railWidth = rail.scrollWidth;
+        const viewport  = outer.offsetWidth;
+        const travel    = Math.max(0, railWidth - viewport);
+        const COMFORT   = 1.1;
+        outer.style.height = (window.innerHeight + travel * COMFORT) + 'px';
+        outer.dataset.travel = travel;
+      }
+
+      function update() {
+        const rect     = outer.getBoundingClientRect();
+        const travel   = parseFloat(outer.dataset.travel || '0');
+        const total    = outer.offsetHeight - window.innerHeight;
+        const scrolled = Math.min(Math.max(-rect.top, 0), total);
+        const p        = total > 0 ? scrolled / total : 0;
+        rail.style.transform = 'translate3d(' + (-p * travel) + 'px, 0, 0)';
+
+        const idx = Math.min(N - 1, Math.floor(p * N + 0.0001));
+        bars.forEach(function (b, i) { b.classList.toggle('on', i <= idx); });
+        if (counter) counter.textContent = String(idx + 1).padStart(2, '0');
+      }
+
+      sizePin();
+      update();
+
+      var ticking = false;
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(function () { update(); ticking = false; });
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function () { sizePin(); update(); });
+
+      return { sizePin: sizePin, update: update };
+    }
+
+    var instances = [];
+    document.querySelectorAll('.pin-outer').forEach(function (outer) {
+      var inst = initGallery(outer);
+      if (inst) instances.push(inst);
+    });
+
+    window.addEventListener('load', function () {
+      instances.forEach(function (inst) { inst.sizePin(); inst.update(); });
+    });
+  })();
+
+  // Mobile nav
+  document.getElementById('nav-hamburger').addEventListener('click', function () {
+    document.getElementById('mobile-menu').classList.add('open');
+  });
+  document.getElementById('mobile-menu-close').addEventListener('click', function () {
+    document.getElementById('mobile-menu').classList.remove('open');
+  });
+</script>
+
+</body>
+</html>
