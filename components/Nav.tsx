@@ -81,7 +81,7 @@ export default function Nav() {
         {/* Right */}
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <a
-            href="#"
+            href="https://www.linkedin.com/in/leon-pereira"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden-mobile"
@@ -173,7 +173,7 @@ export default function Nav() {
           })}
 
           <a
-            href="#"
+            href="https://www.linkedin.com/in/leon-pereira"
             target="_blank"
             rel="noopener noreferrer"
             style={{
