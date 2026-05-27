@@ -32,18 +32,8 @@ export default function Nav() {
         }}
       >
         {/* Left: Logo */}
-        <Link
-          href="/"
-          style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: 12,
-            fontWeight: 700,
-            color: "#ffffff",
-            textDecoration: "none",
-            letterSpacing: "0.05em",
-          }}
-        >
-          NEVERINPROGRESS
+        <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+          <img src="/faviconnav.svg" alt="NEVERINPROGRESS" style={{ height: 28, width: "auto", display: "block" }} />
         </Link>
 
         {/* Center: Nav links (hidden below 640px) */}
@@ -159,7 +149,7 @@ export default function Nav() {
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontFamily: "var(--font-sans)",
                   fontSize: 36,
                   fontWeight: 700,
                   color: active ? "#ffffff" : "#777777",

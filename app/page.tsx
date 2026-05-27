@@ -1,5 +1,6 @@
 import Link from "next/link"
 import HomeRows from "@/components/HomeRows"
+import HomeLenis from "@/components/HomeLenis"
 import PROJECTS from "@/lib/projects"
 
 const SPEC = [
@@ -12,7 +13,8 @@ const SPEC = [
 
 const ABOUT_PARAGRAPHS = [
   "is a concept by Leon Pereira. It comes from his habit of always talking about beginning something, yet never quite starting. ",
-  "He is an industrial designer and creative technologist based in Singapore. His work spans physical product design, UIUX, and communication design."
+  "He works from the felt layer of a problem outward, starting from what is experienced and arriving at what is formed. Across every project, the pattern holds. He is given a thing, and he goes looking for the experience of the thing.",
+  "He has six years of design experience and is currently open to new opportunities. If you have a project in mind, or just want to say hi, his inbox is open.",
 ]
 
 function Eyebrow({ label }: { label: string }) {
@@ -36,6 +38,7 @@ export default function Home() {
   const featuredProjects = PROJECTS.filter(p => p.url)
   return (
     <div style={{ background: "#000", color: "#fff", minHeight: "100vh" }}>
+      <HomeLenis />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section
@@ -47,21 +50,20 @@ export default function Home() {
         <h1
           className="hero-h1-new"
           style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: 64,
-            fontWeight: 700,
+            fontFamily: "var(--font-micro-5)",
+            fontSize: 208,
+            fontWeight: 400,
             letterSpacing: "-0.035em",
             lineHeight: 1.02,
             margin: 0,
           }}
         >
-          <span style={{ display: "block", color: "#e8e8e2" }}>Never in progress...</span>
-          <span style={{ display: "block", color: "#ffffff" }}>but always becoming</span>
+          <span style={{ display: "block", color: "#e8e8e2" }}>LEON PEREIRA</span>
         </h1>
 
         <p style={{
           fontFamily: "var(--font-sans)",
-          fontSize: 14,
+          fontSize: 24,
           color: "#999",
           lineHeight: 1.75,
           maxWidth: 420,
@@ -140,7 +142,7 @@ export default function Home() {
               {ABOUT_PARAGRAPHS.map((text, i) => (
                 <p key={i} style={{
                   fontFamily: "var(--font-sans)",
-                  fontSize: 14,
+                  fontSize: 18,
                   color: "#aaaaaa",
                   lineHeight: 1.8,
                   margin: 0,

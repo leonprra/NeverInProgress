@@ -6,9 +6,10 @@
 <title>My First Pill · Leon Pereira</title>
 <meta name="description" content="A toolkit for teaching children to swallow pills, built on emotional readiness before physical practice.">
 
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Micro+5&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
   :root {
@@ -27,7 +28,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
   body {
-    font-family: "Space Grotesk", sans-serif;
+    font-family: 'Google Sans', 'Product Sans', Inter, system-ui, sans-serif;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -63,9 +64,9 @@
 
   /* SECTION HEADLINE */
   .sec-headline {
-    font-family: "Space Grotesk", sans-serif;
+    font-family: 'Google Sans', 'Product Sans', Inter, system-ui, sans-serif;
     font-size: 30px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--ink);
     letter-spacing: -0.02em;
     line-height: 1.2;
@@ -437,61 +438,9 @@
   .pager .name { color: var(--ink); font-size: 18px; }
 
   /* NAV */
-  .site-nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    height: 48px; z-index: 100; background: transparent;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 24px;
-  }
-  .nav-logo {
-    font-family: "Space Mono", monospace; font-size: 12px; font-weight: 700;
-    color: #ffffff; text-decoration: none; letter-spacing: 0.05em;
-  }
-  .nav-links {
-    display: flex; gap: 32px;
-    position: absolute; left: 50%; transform: translateX(-50%);
-  }
-  .nav-link {
-    font-family: "Space Mono", monospace; font-size: 10px;
-    letter-spacing: 0.1em; color: #777777; text-decoration: none;
-    text-transform: uppercase; transition: color 0.15s ease;
-  }
-  .nav-link:hover { color: #ffffff; }
-  .nav-right { display: flex; align-items: center; gap: 16px; }
-  .nav-locale { font-family: "Space Mono", monospace; font-size: 10px; color: #777777; }
-  .nav-connect { color: #c8f064; text-decoration: none; transition: color 0.15s ease; }
-  .nav-connect:hover { color: #ffffff; }
-  .nav-hamburger {
-    background: none; border: none; cursor: pointer; padding: 0;
-    display: none; flex-direction: column; gap: 5px;
-  }
-  .nav-hamburger span { display: block; width: 20px; height: 1px; background: #ffffff; }
-  .mobile-menu {
-    display: none; position: fixed; inset: 0; z-index: 200;
-    background: #000000; flex-direction: column;
-    align-items: center; justify-content: center; gap: 40px;
-  }
-  .mobile-menu.open { display: flex; }
-  .mobile-menu-close {
-    position: absolute; top: 16px; right: 24px;
-    background: none; border: none; cursor: pointer;
-    font-family: "Space Mono", monospace; font-size: 10px;
-    color: #aaaaaa; letter-spacing: 0.1em; text-transform: uppercase;
-  }
-  .mobile-menu-link {
-    font-family: "Space Grotesk", sans-serif; font-size: 36px; font-weight: 700;
-    color: #777777; text-decoration: none; letter-spacing: -0.02em;
-  }
-  .mobile-menu-link:hover { color: #ffffff; }
-  .mobile-menu-locale {
-    position: absolute; bottom: 32px;
-    font-family: "Space Mono", monospace; font-size: 10px; color: #777777;
-  }
-
-  /* Responsive */
-  @media (max-width: 640px) {
-    .nav-links, .nav-locale { display: none; }
-    .nav-hamburger { display: flex; }
+  .nav-corner-logo {
+    position: fixed; top: 0; left: 0; z-index: 100;
+    padding: 10px 24px; display: flex; align-items: center;
   }
   @media (max-width: 880px) {
     .page { padding: 0 24px; }
@@ -512,30 +461,25 @@
   }
   .hero h1 { color: var(--ink); }
   .hero .tagline { color: #ffffff; }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
 </style>
 </head>
 <body>
 <div id="dither-cover" style="position:fixed;inset:0;background:#0b0b0b;z-index:9999;pointer-events:none;"></div>
 
-<nav class="site-nav">
-  <a href="/" class="nav-logo">NEVERINPROGRESS</a>
-  <div class="nav-links">
-    <a href="/" class="nav-link">Home</a>
-    <a href="/directory" class="nav-link">Directory</a>
-  </div>
-  <div class="nav-right">
-    <a href="https://www.linkedin.com/in/leon-pereira" target="_blank" rel="noopener noreferrer" class="nav-locale nav-connect">Connect ↗</a>
-    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-<div class="mobile-menu" id="mobile-menu">
-  <button class="mobile-menu-close" id="mobile-menu-close">CLOSE</button>
-  <a href="/" class="mobile-menu-link">Home</a>
-  <a href="/directory" class="mobile-menu-link">Directory</a>
-  <a href="https://www.linkedin.com/in/leon-pereira" target="_blank" rel="noopener noreferrer" class="mobile-menu-locale nav-connect">Connect ↗</a>
-</div>
+<a href="/" class="nav-corner-logo">
+  <img src="/faviconnav.svg" alt="Home" style="height:28px;width:auto;display:block;">
+</a>
 
 <!-- ======================================================
      HERO
@@ -769,6 +713,7 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.17/dist/lenis.min.js"></script>
 <script>
   // Entrance dither reveal — gated on hero image load
   (function () {
@@ -846,8 +791,10 @@
     if (img.complete) startReveal()
   })();
 
-  // Gallery instances
+  // Gallery instances + smooth scroll
   (function () {
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     function initGallery(outer) {
       const rail  = outer.querySelector('.pin-rail');
       const bars  = Array.from(outer.querySelectorAll('.pin-hud .bar'));
@@ -881,15 +828,7 @@
       sizePin();
       update();
 
-      var ticking = false;
-      function onScroll() {
-        if (!ticking) {
-          requestAnimationFrame(function () { update(); ticking = false; });
-          ticking = true;
-        }
-      }
-
-      window.addEventListener('scroll', onScroll, { passive: true });
+      // Resize only — scroll is driven externally (Lenis or fallback below)
       window.addEventListener('resize', function () { sizePin(); update(); });
 
       return { sizePin: sizePin, update: update };
@@ -904,15 +843,50 @@
     window.addEventListener('load', function () {
       instances.forEach(function (inst) { inst.sizePin(); inst.update(); });
     });
+
+    if (prefersReduced) {
+      // Reduced-motion: native scroll drives gallery, no Lenis, no reveals
+      instances.forEach(function (inst) {
+        var ticking = false;
+        window.addEventListener('scroll', function () {
+          if (!ticking) {
+            requestAnimationFrame(function () { inst.update(); ticking = false; });
+            ticking = true;
+          }
+        }, { passive: true });
+      });
+    } else {
+      // Lenis smooth scroll — single source of scroll truth
+      var lenis = new Lenis({ lerp: 0.08 });
+
+      // Gallery tracks the lerped position via Lenis scroll event
+      lenis.on('scroll', function () {
+        instances.forEach(function (inst) { inst.update(); });
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Scroll reveals via IntersectionObserver (hero excluded)
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('section:not(.hero)').forEach(function (el) {
+        el.classList.add('reveal');
+        revealObserver.observe(el);
+      });
+    }
   })();
 
-  // Mobile nav
-  document.getElementById('nav-hamburger').addEventListener('click', function () {
-    document.getElementById('mobile-menu').classList.add('open');
-  });
-  document.getElementById('mobile-menu-close').addEventListener('click', function () {
-    document.getElementById('mobile-menu').classList.remove('open');
-  });
 </script>
 
 </body>
