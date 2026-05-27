@@ -353,6 +353,7 @@ function ProjectRow({
 
   // ── goToB ─────────────────────────────────────────────────────────
   const goToB = useCallback(() => {
+    const drawImg = useMelt ? drawImageMelt : drawImage
     stop()
     targetRef.current = "B"
     sizeAll()
@@ -361,9 +362,9 @@ function ProjectRow({
     if (!ta || !tb || !tcv) return
     ta.style.opacity = "1"; tb.style.opacity = "0"
     tcv.getContext("2d")?.clearRect(0, 0, tcv.width, tcv.height)
-    useMelt ? drawImageMelt(0) : drawImage(0)
+    drawImg(0)
     run(DUR, t => {
-      useMelt ? drawImageMelt(t) : drawImage(t)
+      drawImg(t)
       if (t < 0.5) {
         drawTextMask(t * 2, true)
       } else {
@@ -373,12 +374,13 @@ function ProjectRow({
     }, () => {
       ta.style.opacity = "0"; tb.style.opacity = "1"
       tcv.getContext("2d")?.clearRect(0, 0, tcv.width, tcv.height)
-      useMelt ? drawImageMelt(1) : drawImage(1)
+      drawImg(1)
     })
   }, [stop, sizeAll, buildCache, drawImage, drawImageMelt, drawTextMask, run, useMelt])
 
   // ── goToA ─────────────────────────────────────────────────────────
   const goToA = useCallback(() => {
+    const drawImg = useMelt ? drawImageMelt : drawImage
     stop()
     targetRef.current = "A"
     sizeAll()
@@ -387,9 +389,9 @@ function ProjectRow({
     if (!ta || !tb || !tcv) return
     tb.style.opacity = "1"; ta.style.opacity = "0"
     tcv.getContext("2d")?.clearRect(0, 0, tcv.width, tcv.height)
-    useMelt ? drawImageMelt(1) : drawImage(1)
+    drawImg(1)
     run(DUR, t => {
-      useMelt ? drawImageMelt(1 - t) : drawImage(1 - t)
+      drawImg(1 - t)
       if (t < 0.5) {
         drawTextMask(t * 2, true)
       } else {
@@ -399,7 +401,7 @@ function ProjectRow({
     }, () => {
       tb.style.opacity = "0"; ta.style.opacity = "1"
       tcv.getContext("2d")?.clearRect(0, 0, tcv.width, tcv.height)
-      useMelt ? drawImageMelt(0) : drawImage(0)
+      drawImg(0)
     })
   }, [stop, sizeAll, buildCache, drawImage, drawImageMelt, drawTextMask, run, useMelt])
 
@@ -417,7 +419,7 @@ function ProjectRow({
           imgRef.current = img
           sizeAll()
           buildCache()
-          useMelt ? drawImageMelt(0) : drawImage(0)
+          if (useMelt) drawImageMelt(0); else drawImage(0)
         }
         img.src = project.heroImage
       }
@@ -430,7 +432,7 @@ function ProjectRow({
       sizeAll()
       buildCache()
       const isB = targetRef.current === "B"
-      useMelt ? drawImageMelt(isB ? 1 : 0) : drawImage(isB ? 1 : 0)
+      if (useMelt) drawImageMelt(isB ? 1 : 0); else drawImage(isB ? 1 : 0)
     }
     window.addEventListener("resize", onResize)
 
