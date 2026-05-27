@@ -1,8 +1,8 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
+import { TransitionLink } from "@/components/TransitionContext"
 
 const NAV_LINKS = [
   { label: "HOME", href: "/" },
@@ -32,9 +32,9 @@ export default function Nav() {
         }}
       >
         {/* Left: Logo */}
-        <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+        <TransitionLink href="/" style={{ display: "flex", alignItems: "center" }}>
           <img src="/faviconnav.svg" alt="NEVERINPROGRESS" style={{ height: 28, width: "auto", display: "block" }} />
-        </Link>
+        </TransitionLink>
 
         {/* Center: Nav links (hidden below 640px) */}
         <div
@@ -50,7 +50,7 @@ export default function Nav() {
           {NAV_LINKS.map((link) => {
             const active = pathname === link.href
             return (
-              <Link
+              <TransitionLink
                 key={link.href}
                 href={link.href}
                 style={{
@@ -63,7 +63,7 @@ export default function Nav() {
                 }}
               >
                 {link.label}
-              </Link>
+              </TransitionLink>
             )
           })}
         </div>
@@ -144,7 +144,7 @@ export default function Nav() {
           {NAV_LINKS.map((link) => {
             const active = pathname === link.href
             return (
-              <Link
+              <TransitionLink
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
@@ -158,7 +158,7 @@ export default function Nav() {
                 }}
               >
                 {link.label}
-              </Link>
+              </TransitionLink>
             )
           })}
 

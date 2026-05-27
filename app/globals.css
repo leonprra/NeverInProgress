@@ -92,6 +92,20 @@ button {
   border-color: #c8f064;
 }
 
+/* ── Hero dither: hide h1 when canvas is active; show it for reduced-motion ── */
+.hero-canvas-h1 {
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-canvas-h1 {
+    opacity: 1;
+    pointer-events: auto;
+    user-select: auto;
+  }
+}
+
 /* ── Home page responsive ── */
 @media (max-width: 767px) {
   .hero-section {

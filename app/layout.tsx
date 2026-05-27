@@ -3,6 +3,7 @@ import { Space_Mono, Inter, Micro_5 } from "next/font/google"
 import "./globals.css"
 import Nav from "@/components/Nav"
 import PageTransition from "@/components/PageTransition"
+import { TransitionProvider, TransitionWrapper } from "@/components/TransitionContext"
 
 const spaceMono = Space_Mono({
   subsets: ["latin"],
@@ -41,10 +42,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${spaceMono.variable} ${inter.variable} ${micro5.variable}`}>
       <body>
-        <Nav />
-        <main style={{ paddingTop: 48, minHeight: "100vh" }}>
-          {children}
-        </main>
+        <TransitionProvider>
+          <Nav />
+          <main style={{ paddingTop: 48, minHeight: "100vh" }}>
+            <TransitionWrapper>
+              {children}
+            </TransitionWrapper>
+          </main>
+        </TransitionProvider>
         <PageTransition />
       </body>
     </html>

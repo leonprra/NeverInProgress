@@ -1,6 +1,7 @@
-import Link from "next/link"
 import HomeRows from "@/components/HomeRows"
+import { TransitionLink } from "@/components/TransitionContext"
 import HomeLenis from "@/components/HomeLenis"
+import HeroDither from "@/components/HeroDither"
 import PROJECTS from "@/lib/projects"
 
 const SPEC = [
@@ -13,8 +14,8 @@ const SPEC = [
 
 const ABOUT_PARAGRAPHS = [
   "is a concept by Leon Pereira. It comes from his habit of always talking about beginning something, yet never quite starting. ",
-  "He works from the felt layer of a problem outward, starting from what is experienced and arriving at what is formed. Across every project, the pattern holds. He is given a thing, and he goes looking for the experience of the thing.",
-  "He has six years of design experience and is currently open to new opportunities. If you have a project in mind, or just want to say hi, his inbox is open.",
+  "He breaks down a problem to its granular components, building solutions bit by bit. Across every project, the pattern holds, break down to build better.",
+  "He has six years of design experience and is currently open to new opportunities. If you have a project in mind, reach out!",
 ]
 
 function Eyebrow({ label }: { label: string }) {
@@ -45,31 +46,34 @@ export default function Home() {
         className="hero-section"
         style={{ padding: "96px 40px 80px", borderBottom: "1px solid #111" }}
       >
-
-
-        <h1
-          className="hero-h1-new"
-          style={{
-            fontFamily: "var(--font-micro-5)",
-            fontSize: 208,
-            fontWeight: 400,
-            letterSpacing: "-0.035em",
-            lineHeight: 1.02,
-            margin: 0,
-          }}
-        >
-          <span style={{ display: "block", color: "#e8e8e2" }}>LEON PEREIRA</span>
-        </h1>
+        {/* Canvas overlays the h1 wrapper; h1 stays in DOM for SEO/a11y */}
+        <div style={{ position: "relative" }}>
+          <h1
+            className="hero-h1-new hero-canvas-h1"
+            style={{
+              fontFamily: "var(--font-micro-5)",
+              fontSize: 208,
+              fontWeight: 400,
+              letterSpacing: "-0.035em",
+              lineHeight: 1.02,
+              margin: 0,
+            }}
+          >
+            <span style={{ display: "block", color: "#e8e8e2" }}>LEON PEREIRA</span>
+          </h1>
+          <HeroDither />
+        </div>
 
         <p style={{
           fontFamily: "var(--font-sans)",
-          fontSize: 24,
+          fontSize: 16,
           color: "#999",
           lineHeight: 1.75,
           maxWidth: 420,
           marginTop: 24,
+          marginLeft: "4%",
         }}>
-          Designing things that get a 👍👍
+          6 years of designing things that get a 👍👍
         </p>
       </section>
 
@@ -110,9 +114,9 @@ export default function Home() {
         className="dir-section"
         style={{ padding: "36px 40px", borderBottom: "1px solid #111" }}
       >
-        <Link href="/directory" className="dir-btn">
+        <TransitionLink href="/directory" className="dir-btn">
           View all works ↗
-        </Link>
+        </TransitionLink>
       </div>
 
       {/* ── About ────────────────────────────────────────────────── */}
